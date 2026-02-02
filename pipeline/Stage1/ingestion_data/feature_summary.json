@@ -1,0 +1,250 @@
+{
+    "Age, years": "Continuous",
+    "Sex": {
+        "Binary": [
+            " female ",
+            " male"
+        ]
+    },
+    "Height, cm": "Continuous",
+    "Weight, kg": "Continuous",
+    "Body mass index (BMI), kg/m^2": "Continuous",
+    "Length of stay, days": "Continuous",
+    "Alvarado score (AS), pts": "Discrete",
+    "Pediatric appendicitis score (PAS), pts": "Discrete",
+    "Peritonitis/abdominal guarding": {
+        "Categorical": [
+            "no ",
+            " localized",
+            " generalized"
+        ]
+    },
+    "Migration of pain": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Tenderness in right lower quadrant (RLQ)": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Contralateral rebound tnderness": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Ipsilateral rebound tenderness": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Cough tenderness": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Psoas sign": {
+        "Binary": [
+            " negative ",
+            " positive"
+        ]
+    },
+    "Nausea/vomiting": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Anorexia": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Body temperature, \u00b0C": "Continuous",
+    "Dysuria": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Stool": {
+        "Categorical": [
+            "normal",
+            " diarrhea",
+            " obstipation"
+        ]
+    },
+    "White blood cell count (WBC), 10^3/\u00b5l": "Continuous",
+    "Red blood cell count (RBC), /pl": "Continuous",
+    "Hemoglobin, g/dl": "Continuous",
+    "Red cell distribution width (RDW), %": "Continuous",
+    "Thrombocyte count, /nl": "Continuous",
+    "Neutrophils, %": "Continuous",
+    "Neutrophilia, >= 75%": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Segmented neutrophils, %": "Continuous",
+    "C-reactive protein (CRP), mg/l": "Continuous",
+    "Ketones in urine": {
+        "Categorical": [
+            "no",
+            " +",
+            " ++",
+            " +++"
+        ]
+    },
+    "Erythrocytes in urine": {
+        "Categorical": [
+            "neg: < 5 ery/\u00b5l",
+            " +: approx. 5-10 ery/\u00b5l ",
+            " ++: approx. 25 ery/\u00b5l",
+            " +++: approx. 50 ery/\u00b5l"
+        ]
+    },
+    "White blood cells in urine": {
+        "Categorical": [
+            "no",
+            " +",
+            " ++",
+            " +++"
+        ]
+    },
+    "Performed ultrasound (US)": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Visibility of appendix": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Appendix diameter, mm": "Continuous",
+    "Free intraperitoneal fluid": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Appendix layer structure": {
+        "Binary": [
+            " regular ",
+            " irregular"
+        ]
+    },
+    "Target sign": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Appendix perfusion": {
+        "Categorical": [
+            "unremarkable",
+            " hypoperfused",
+            " hyperperfused"
+        ]
+    },
+    "Surrounding tissue reaction": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Pathological lymph nodes": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Location of pathological lymph nodes": "FreeText",
+    "Thickening of the bowel wall": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Ileus": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Coprostasis": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Meteorism": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Enteritis": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Appendicolith": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Perforation": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Appendicular abscess": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Location of abscess": "FreeText",
+    "Conglomerate of bowel loops": {
+        "Binary": [
+            " no ",
+            " yes"
+        ]
+    },
+    "Gynaecological findings": "FreeText",
+    "Ultrasound images": "Image BMP",
+    "Presumptive diagnosis": "FreeText",
+    "Diagnosis": {
+        "Binary": [
+            " no appendicitis ",
+            " appendicitis"
+        ]
+    },
+    "Management": {
+        "Categorical": [
+            " conservative ",
+            " primary surgical ",
+            " secondary surgical"
+        ]
+    },
+    "Severity": {
+        "Binary": [
+            " uncomplicated or no appendicitis ",
+            " complicated appendicitis"
+        ]
+    }
+}
