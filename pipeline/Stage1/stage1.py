@@ -11,7 +11,7 @@ raw_data_path = os.path.join(ROOT_DIR, DATASET_DIR, FILE_NAME)
 
 
 def run_stage1():
- 
+
     if not os.path.exists(raw_data_path):
         print(f"[STAGE 1] Data not found at {raw_data_path}. Initializing download...")
 
