@@ -11,12 +11,10 @@ raw_data_path = os.path.join(ROOT_DIR, DATASET_DIR, FILE_NAME)
 
 
 def run_stage1():
-    # 1. Check if the raw data exists
+ 
     if not os.path.exists(raw_data_path):
         print(f"[STAGE 1] Data not found at {raw_data_path}. Initializing download...")
 
-        # Initialize your downloader
-        # Pass ROOT_DIR and DATASET_DIR to ensure it downloads to the right place
         downloader = DataDownloader(os.path.join(ROOT_DIR, DATASET_DIR))
         downloader.download_all()
         print("[STAGE 1] Download complete.")
