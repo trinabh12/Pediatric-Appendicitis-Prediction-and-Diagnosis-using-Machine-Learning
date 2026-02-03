@@ -12,5 +12,6 @@ MISSING_REPORT = "missing_data.json"
 
 
 dp = DataPreparation(PREV_STAGE, DATASET_DIR, FILE_NAME, DATA_INFO, MISSING_REPORT)
-dp.drop_empty_rows()
-dp.find_all_dependencies()
+
+print(dp.handle_numeric_features())
+

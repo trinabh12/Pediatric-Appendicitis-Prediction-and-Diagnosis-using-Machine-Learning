@@ -13,12 +13,7 @@ class DataPreparation:
         with open(os.path.join(self.prev_stage_dir, missing_report), 'r') as f:
             self.missing_counts = json.load(f)
 
-        self.total_rows = len(self.df)
-        self.branches = {
-            "trunk": [],
-            "conditional": [],
-            "sparse": []
-        }
+        self.dependents = ["BMI", "Alvarado_Score", "Paedriatic_Appendicitis_Score"]
 
     def drop_empty_rows(self):
         demo_cols = ["Age", "Sex", "Weight", "Height"]
@@ -33,57 +28,69 @@ class DataPreparation:
 
         df_cleaned = self.df.drop(index=rows_to_drop).reset_index(drop=True)
         self.df = df_cleaned
+        self.missing_counts = {key: value - 1 for key, value in self.missing_counts.items()}
+
+        return self.missing_counts
+
+    def handle_numeric_features(self):
+        all_numerics = [feature for feature, f_type in self.feature_info.items()
+                        if f_type == "Discrete" or f_type == "Continuous"]
+
+        numeric_features = [feature for feature in all_numerics if feature not in self.dependents]
+
+        low_missing = []
+        moderate_missing = []
+        high_missing = []
+
+        for feature in numeric_features:
+            percent_missing = (self.missing_counts[feature]/len(self.df))*100
+
+            if percent_missing < 5:
+                low_missing.append(feature)
+
+            elif percent_missing <= 40:
+                moderate_missing.append(feature)
+
+            else:
+                high_missing.append(feature)
+
+        print(f"for low missing (Median): {low_missing}")
+        print(f"for moderate missing (Iterative): {moderate_missing}")
+        print(f"for high missing (Constant/Flag): {high_missing}")
 
 
-    def find_all_dependencies(self, missing_threshold=0.8, diff_threshold=0.4):
-        df = self.df
-        dependency_map = {
-            "conditional": {},
-            "calculated": {}
-        }
+        return numeric_features
 
-        potential_gates = [k for k, v in self.feature_info.items() if isinstance(v, dict) and "Binary" in v]
+    def handle_freetext_features(self):
+        freetext_features = [feature for feature, f_type in self.feature_info.items()
+                             if f_type == "FreeText"]
+        print(len(freetext_features))
+        return freetext_features
 
-        for gate in potential_gates:
-            if gate not in df.columns:
-                continue
-            for state in df[gate].dropna().unique():
-                neg_mask = (df[gate] == state)
-                pos_mask = (df[gate] != state)
-                if np.sum(neg_mask) < 5 or np.sum(pos_mask) < 5:
-                    continue
+    def handle_binary_features(self):
+        binary_features = [feature for feature, f_type in self.feature_info.items()
+                           if (isinstance(f_type, dict) and "Binary" in f_type)]
 
-                dependents = []
-                for col in df.columns:
-                    if col == gate or col in potential_gates:
-                        continue
-                    m_neg = df.loc[neg_mask, col].isna().mean()
-                    m_pos = df.loc[pos_mask, col].isna().mean()
+        print(len(binary_features))
+        return binary_features
 
-                    if m_neg > missing_threshold and (m_neg - m_pos) > diff_threshold:
-                        dependents.append(col)
+    def handle_categorical_features(self):
+        categorical_features = [feature for feature, f_type in self.feature_info.items()
+                                if (isinstance(f_type, dict) and "Categorical" in f_type)]
 
-                if dependents:
-                    dependency_map["conditional"][f"{gate}=={state}"] = dependents
+        print(len(categorical_features))
+        return categorical_features
 
-        numeric_cols = [k for k, v in self.feature_info.items() if v in ["Continuous", "Discrete"]]
+    def handle_image_features(self):
+        image_features = [feature for feature, f_type in self.feature_info.items()
+                          if f_type == "Image BMP"]
 
-        for parent in numeric_cols:
-            if parent not in df.columns:
-                continue
-            parent_missing_mask = df[parent].isna()
-            if parent_missing_mask.sum() == 0:
-                continue
+        print(len(image_features))
+        return image_features
 
-            for child in numeric_cols:
-                if parent == child:
-                    continue
 
-                child_missing_when_parent_missing = df.loc[parent_missing_mask, child].isna().all()
 
-                if child_missing_when_parent_missing:
-                    if parent not in dependency_map["calculated"]:
-                        dependency_map["calculated"][parent] = []
-                    dependency_map["calculated"][parent].append(child)
 
-        return dependency_map
+
+
+

@@ -12,6 +12,7 @@ class IngestionStage:
         self.output_data = "raw_data.xlsx"
         self.output_summary = "feature_summary.json"
         self.output_info = "feature_info.json"
+        self.output_feature_groups = "feature_grouped.json"
         self.file_path = os.path.join(self.dataset_dir, self.file)
 
         self.df_cases = pd.read_excel(self.file_path, sheet_name="All cases")
@@ -118,5 +119,11 @@ class IngestionStage:
             info_path = os.path.join(output_folder, self.output_info)
             with open(info_path, "w") as f:
                 json.dump(info_dict, f, indent=4)
+
+            self.df_summary['Variable Group'] = self.df_summary['Variable Group'].ffill()
+            feature_group = self.df_summary.groupby('Variable Group')['Variable'].apply(list).to_dict()
+            feature_group_path = os.path.join(output_folder, self.output_feature_groups)
+            with open(feature_group_path, "w") as f:
+                json.dump(feature_group, f, indent=4)
 
         return 0
