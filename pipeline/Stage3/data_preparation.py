@@ -5,13 +5,16 @@ import numpy as np
 
 
 class DataPreparation:
-    def __init__(self, prev_stage, data_dir, data_file, info_report, missing_report):
+    def __init__(self, prev_stage, data_dir, data_file, info_report, missing_report, grouped_report):
         self.prev_stage_dir = os.path.join(prev_stage, data_dir)
         self.df = pd.read_excel(os.path.join(self.prev_stage_dir, data_file))
+
         with open(os.path.join(self.prev_stage_dir, info_report), 'r') as f:
             self.feature_info = json.load(f)
         with open(os.path.join(self.prev_stage_dir, missing_report), 'r') as f:
             self.missing_counts = json.load(f)
+        with open(os.path.join(self.prev_stage_dir, grouped_report), 'r') as f:
+            self.grouped_features = json.load(f)
 
         self.dependents = ["BMI", "Alvarado_Score", "Paedriatic_Appendicitis_Score"]
 
@@ -32,61 +35,68 @@ class DataPreparation:
 
         return self.missing_counts
 
-    def handle_numeric_features(self):
-        all_numerics = [feature for feature, f_type in self.feature_info.items()
-                        if f_type == "Discrete" or f_type == "Continuous"]
+    def numeric_filling(self, feature_name):
+        if feature_name not in self.df.columns:
+            return "feature name not found"
 
-        numeric_features = [feature for feature in all_numerics if feature not in self.dependents]
+        missing_pct = self.df[feature_name].isnull().mean()
+        if missing_pct > 0.8:
+            self.df[feature_name] = self.df[feature_name].fillna(0)
+            return f"{feature_name}: Filled null values with 0"
 
-        low_missing = []
-        moderate_missing = []
-        high_missing = []
+        if missing_pct < 0.05:
+            skewness = self.df[feature_name].skew()
 
-        for feature in numeric_features:
-            percent_missing = (self.missing_counts[feature]/len(self.df))*100
-
-            if percent_missing < 5:
-                low_missing.append(feature)
-
-            elif percent_missing <= 40:
-                moderate_missing.append(feature)
-
+            if abs(skewness) > 1:
+                fill_value = self.df[feature_name].median()
+                self.df[feature_name] = self.df[feature_name].fillna(fill_value)
+                return f"{feature_name}: Filled with median"
             else:
-                high_missing.append(feature)
+                fill_value = self.df[feature_name].mean()
+                self.df[feature_name] = self.df[feature_name].fillna(fill_value)
+                return f"{feature_name}: Filled with mean"
+        else:
+            return f"{feature_name}: Does not need filling"
 
-        print(f"for low missing (Median): {low_missing}")
-        print(f"for moderate missing (Iterative): {moderate_missing}")
-        print(f"for high missing (Constant/Flag): {high_missing}")
+    def feature_value_type(self, feature_name):
+        if self.feature_info[feature_name] == "Discrete":
+            return "numeric"
+        if self.feature_info[feature_name] == "Continuous":
+            return "numeric"
+        if isinstance(self.feature_info[feature_name], dict):
+            if "Binary" in self.feature_info[feature_name]:
+                return "bin_or_cat"
+            if "Categorical" in self.feature_info[feature_name]:
+                return "bin_or_cat"
 
 
-        return numeric_features
+    def handle_demographic(self):
+        dependent_features = ["BMI"]
+        key_group = "Demographic / Other"
 
-    def handle_freetext_features(self):
-        freetext_features = [feature for feature, f_type in self.feature_info.items()
-                             if f_type == "FreeText"]
-        print(len(freetext_features))
-        return freetext_features
+        feature_list = [feature for feature in self.grouped_features[key_group]
+                        if feature not in dependent_features]
+        print(feature_list)
 
-    def handle_binary_features(self):
-        binary_features = [feature for feature, f_type in self.feature_info.items()
-                           if (isinstance(f_type, dict) and "Binary" in f_type)]
+        for feature in feature_list:
+            if self.feature_value_type(feature) == "numeric":
+                print(feature)
+                print(feature_list)
+                print(self.numeric_filling(feature))
+            else:
+                print("ioiooio")
 
-        print(len(binary_features))
-        return binary_features
 
-    def handle_categorical_features(self):
-        categorical_features = [feature for feature, f_type in self.feature_info.items()
-                                if (isinstance(f_type, dict) and "Categorical" in f_type)]
 
-        print(len(categorical_features))
-        return categorical_features
 
-    def handle_image_features(self):
-        image_features = [feature for feature, f_type in self.feature_info.items()
-                          if f_type == "Image BMP"]
 
-        print(len(image_features))
-        return image_features
+
+
+
+
+
+
+
 
 
 
