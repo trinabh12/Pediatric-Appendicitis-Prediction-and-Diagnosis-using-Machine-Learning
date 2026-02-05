@@ -1,0 +1,72 @@
+{
+    "Clinical": [
+        "Peritonitis/abdominal guarding",
+        "Migration of pain",
+        "Tenderness in right lower quadrant (RLQ)",
+        "Contralateral rebound tnderness",
+        "Ipsilateral rebound tenderness",
+        "Cough tenderness",
+        "Psoas sign",
+        "Nausea/vomiting",
+        "Anorexia",
+        "Body temperature, \u00b0C",
+        "Dysuria",
+        "Stool"
+    ],
+    "Demographic / Other": [
+        "Age, years",
+        "Sex",
+        "Height, cm",
+        "Weight, kg",
+        "Body mass index (BMI), kg/m^2",
+        "Length of stay, days"
+    ],
+    "Diagnosis / Management / Severity": [
+        "Presumptive diagnosis",
+        "Diagnosis",
+        "Management",
+        "Severity"
+    ],
+    "Laboratory": [
+        "White blood cell count (WBC), 10^3/\u00b5l",
+        "Red blood cell count (RBC), /pl",
+        "Hemoglobin, g/dl",
+        "Red cell distribution width (RDW), %",
+        "Thrombocyte count, /nl",
+        "Neutrophils, %",
+        "Neutrophilia, >= 75%",
+        "Segmented neutrophils, %",
+        "C-reactive protein (CRP), mg/l",
+        "Ketones in urine",
+        "Erythrocytes in urine",
+        "White blood cells in urine"
+    ],
+    "Scoring": [
+        "Alvarado score (AS), pts",
+        "Pediatric appendicitis score (PAS), pts"
+    ],
+    "Ultrasound": [
+        "Performed ultrasound (US)",
+        "Visibility of appendix",
+        "Appendix diameter, mm",
+        "Free intraperitoneal fluid",
+        "Appendix layer structure",
+        "Target sign",
+        "Appendix perfusion",
+        "Surrounding tissue reaction",
+        "Pathological lymph nodes",
+        "Location of pathological lymph nodes",
+        "Thickening of the bowel wall",
+        "Ileus",
+        "Coprostasis",
+        "Meteorism",
+        "Enteritis",
+        "Appendicolith",
+        "Perforation",
+        "Appendicular abscess",
+        "Location of abscess",
+        "Conglomerate of bowel loops",
+        "Gynaecological findings",
+        "Ultrasound images"
+    ]
+}
