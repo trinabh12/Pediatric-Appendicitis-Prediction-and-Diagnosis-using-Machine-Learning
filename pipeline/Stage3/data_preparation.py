@@ -130,4 +130,14 @@ class DataPreparation:
                 log = self.binary_and_categorical_filling(feature)
                 print(log)
 
+        if "Height" in self.df.columns and "Weight" in self.df.columns:
+            # BMI = weight(kg) / (height(m)^2)
+            mask = self.df["BMI"].isna() & self.df["Height"].notna() & self.df["Weight"].notna()
+            self.df.loc[mask, "BMI"] = self.df["Weight"] / ((self.df["Height"] / 100) ** 2)
+            print("BMI: Filled with h and w")
+
+            if self.df["BMI"].isna().any():
+                self.numeric_filling("BMI")
+                print("BMI: Recalculated where possible, remaining imputed.")
+
         return 0
