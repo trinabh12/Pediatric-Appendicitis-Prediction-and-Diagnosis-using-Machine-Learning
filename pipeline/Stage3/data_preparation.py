@@ -1,7 +1,7 @@
 import os
 import json
 import pandas as pd
-import numpy as np
+#import numpy as np
 
 
 class DataPreparation:
@@ -35,16 +35,49 @@ class DataPreparation:
 
         return self.missing_counts
 
+    def feature_value_type(self, feature_name):
+        if self.feature_info[feature_name] == "Discrete":
+            return "numeric"
+        if self.feature_info[feature_name] == "Continuous":
+            return "numeric"
+        if isinstance(self.feature_info[feature_name], dict):
+            if "Binary" in self.feature_info[feature_name]:
+                return "bin_or_cat"
+            if "Categorical" in self.feature_info[feature_name]:
+                return "bin_or_cat"
+
+    def binary_or_categorical_groups(self, feature_name):
+        if self.feature_value_type(feature_name) != "bin_or_cat":
+            return f"{feature_name} is not a Binary or Categorical feature."
+
+        info = self.feature_info[feature_name]
+        if "Binary" in info:
+            groups = info["Binary"]
+            return groups
+
+        if "Categorical" in info:
+            groups = info["Categorical"]
+            return groups
+
     def numeric_filling(self, feature_name):
         if feature_name not in self.df.columns:
-            return "feature name not found"
+            return "feature name not found."
 
-        missing_pct = self.df[feature_name].isnull().mean()
-        if missing_pct > 0.8:
+        if self.feature_value_type(feature_name) != "numeric":
+            return "feature is not a numeric."
+
+        total_rows = len(self.df)
+        missing_pct = (self.missing_counts[feature_name] / total_rows) * 100
+
+        if missing_pct >50:
             self.df[feature_name] = self.df[feature_name].fillna(0)
             return f"{feature_name}: Filled null values with 0"
 
-        if missing_pct < 0.05:
+        if 50 >= missing_pct > 5:
+            self.df[feature_name] = self.df[feature_name].fillna(0)
+            return f"{feature_name}: Filled null values with 0"
+
+        if missing_pct <= 5:
             skewness = self.df[feature_name].skew()
 
             if abs(skewness) > 1:
@@ -58,17 +91,25 @@ class DataPreparation:
         else:
             return f"{feature_name}: Does not need filling"
 
-    def feature_value_type(self, feature_name):
-        if self.feature_info[feature_name] == "Discrete":
-            return "numeric"
-        if self.feature_info[feature_name] == "Continuous":
-            return "numeric"
-        if isinstance(self.feature_info[feature_name], dict):
-            if "Binary" in self.feature_info[feature_name]:
-                return "bin_or_cat"
-            if "Categorical" in self.feature_info[feature_name]:
-                return "bin_or_cat"
+    def binary_and_categorical_filling(self, feature_name):
+        if self.feature_value_type(feature_name) != "bin_or_cat":
+            return f"{feature_name} is not a Binary or Categorical feature."
 
+        total_rows = len(self.df)
+        missing_count = self.missing_counts.get(feature_name, 0)
+
+        if missing_count == 0:
+            return f"{feature_name}: No missing values."
+
+        missing_pct = (missing_count / total_rows) *100
+
+        if missing_pct > 50:
+            self.df[feature_name] = self.df[feature_name].fillna(0)
+            return f"{feature_name}: Filled null values with 0"
+
+        fill_value = self.df[feature_name].mode()[0]
+        self.df[feature_name] = self.df[feature_name].fillna(fill_value)
+        return f"{feature_name}: Filled with Mode"
 
     def handle_demographic(self):
         dependent_features = ["BMI"]
@@ -76,31 +117,17 @@ class DataPreparation:
 
         feature_list = [feature for feature in self.grouped_features[key_group]
                         if feature not in dependent_features]
-        print(feature_list)
+
+
 
         for feature in feature_list:
             if self.feature_value_type(feature) == "numeric":
-                print(feature)
-                print(feature_list)
-                print(self.numeric_filling(feature))
-            else:
-                print("ioiooio")
+                log = self.numeric_filling(feature)
+                print(log)
 
 
+            elif self.feature_value_type(feature) == "bin_or_cat":
+                log = self.binary_and_categorical_filling(feature)
+                print(log)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return 0
