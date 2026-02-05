@@ -11,8 +11,8 @@ DATA_GROUPED = "feature_grouped.json"
 
 
 
-vpf = ValidationAndProfiling(PREV_STAGE, DATASET_DIR, FILE_NAME, DATA_INFO, DATA_SUMMARY, DATA_GROUPED)
+validation_check = ValidationAndProfiling(PREV_STAGE, DATASET_DIR, FILE_NAME, DATA_INFO, DATA_SUMMARY, DATA_GROUPED)
 
-if vpf.validation():
-    vpf.save_report(target_folder)
+if validation_check.validation():
+    validation_check.save_report(target_folder)
 
