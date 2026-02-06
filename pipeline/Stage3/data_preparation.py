@@ -112,19 +112,16 @@ class DataPreparation:
         return f"{feature_name}: Filled with Mode"
 
     def handle_demographic(self):
-        dependent_features = ["BMI"]
         key_group = "Demographic / Other"
+        dependent_features = ["BMI"]
 
         feature_list = [feature for feature in self.grouped_features[key_group]
                         if feature not in dependent_features]
-
-
 
         for feature in feature_list:
             if self.feature_value_type(feature) == "numeric":
                 log = self.numeric_filling(feature)
                 print(log)
-
 
             elif self.feature_value_type(feature) == "bin_or_cat":
                 log = self.binary_and_categorical_filling(feature)
@@ -134,10 +131,46 @@ class DataPreparation:
             # BMI = weight(kg) / (height(m)^2)
             mask = self.df["BMI"].isna() & self.df["Height"].notna() & self.df["Weight"].notna()
             self.df.loc[mask, "BMI"] = self.df["Weight"] / ((self.df["Height"] / 100) ** 2)
-            print("BMI: Filled with h and w")
+            print("BMI: Filled with recalculation")
 
             if self.df["BMI"].isna().any():
                 self.numeric_filling("BMI")
                 print("BMI: Recalculated where possible, remaining imputed.")
 
-        return 0
+        return "Demographics data handled"
+
+    def handle_clinical(self):
+        key_group = "Clinical"
+        clinical_dependencies = {
+            "Migratory_Pain": "Lower_Right_Abd_Pain",
+            "Contralateral_Rebound_Tenderness": "Lower_Right_Abd_Pain",
+            "Ipsilateral_Rebound_Tenderness": "Lower_Right_Abd_Pain",
+            "Coughing_Pain": "Peritonitis"
+        }
+
+        parents = set(clinical_dependencies.values())
+        for p in parents:
+            if p in self.df.columns:
+                print(self.binary_and_categorical_filling(p))
+
+        for feature in self.grouped_features[key_group]:
+            if self.df[feature].isna().sum() == 0:
+                continue
+
+            if feature in clinical_dependencies:
+                parent = clinical_dependencies[feature]
+
+                mask = (self.df[feature].isna()) & (self.df[parent] == 0)
+                if mask.any():
+                    self.df.loc[mask, feature] = 0
+                    print(f"{feature}: Conditionally filled 0 based on {parent}")
+
+            if self.df[feature].isna().any():
+                v_type = self.feature_value_type(feature)
+                if v_type == "numeric":
+                    print(self.numeric_filling(feature))
+                else:
+                    print(self.binary_and_categorical_filling(feature))
+
+        return "Clinical data handled"
+
