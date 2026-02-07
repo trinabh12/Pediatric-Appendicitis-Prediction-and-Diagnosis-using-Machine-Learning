@@ -1,6 +1,7 @@
 import os
 import json
 import pandas as pd
+import numpy as np
 
 
 class DataPreparation:
@@ -14,23 +15,6 @@ class DataPreparation:
             self.missing_counts = json.load(f)
         with open(os.path.join(self.prev_stage_dir, grouped_report), 'r') as f:
             self.grouped_features = json.load(f)
-
-        self.logic_dependencies = {
-            # Clinical
-            "Migratory_Pain": "Lower_Right_Abd_Pain",
-            "Contralateral_Rebound_Tenderness": "Lower_Right_Abd_Pain",
-            "Ipsilateral_Rebound_Tenderness": "Lower_Right_Abd_Pain",
-            "Coughing_Pain": "Peritonitis",
-            # Ultrasound
-            "Appendix_Diameter": "Appendix_on_US",
-            "Appendix_Wall_Layers": "Appendix_on_US",
-            "Target_Sign": "Appendix_on_US",
-            "Perfusion": "Appendix_on_US",
-            "Appendicolith": "Appendix_on_US",
-            "Perforation": "Appendix_on_US",
-            "Abscess_Location": "Appendicular_Abscess",
-            "Lymph_Nodes_Location": "Pathological_Lymph_Nodes"
-        }
 
     def drop_empty_rows(self):
         demo_cols = ["Age", "Sex", "Weight", "Height"]
@@ -51,14 +35,12 @@ class DataPreparation:
 
     def feature_value_type(self, feature_name):
         numeric_dependencies = ["BMI", "Alvarado_Score", "Paedriatic_Appendicitis_Score"]
-        conditional_dependencies = ["Migratory_Pain", "Contralateral_Rebound_Tenderness",
-                                    "Ipsilateral_Rebound_Tenderness", "Coughing_Pain", "Appendix_Diameter",
-                                    "Appendix_Wall_Layers", "Target_Sign", "Perfusion", "Appendicolith", "Perforation",
-                                    "Abscess_Location", "Lymph_Nodes_Location"]
+        ultrasound_features = self.grouped_features["Ultrasound"]
+
         if feature_name in numeric_dependencies:
             return "numerically_dependent"
-        if feature_name in conditional_dependencies:
-            return "conditionally_dependent"
+        if feature_name in ultrasound_features:
+            return "ultrasound_feature"
         if self.feature_info[feature_name] == "Discrete":
             return "numeric"
         if self.feature_info[feature_name] == "Continuous":
@@ -125,29 +107,12 @@ class DataPreparation:
         self.df[feature_name] = self.df[feature_name].fillna(fill_value)
         return f"{feature_name}: Filled with Mode."
 
-    def encode_binary_categorical(self, feature):
-        info = self.feature_info.get(feature)
-        options = info.get("Binary") or info.get("Categorical")
-
-        if "yes" in options and "no" in options:
-            mapping = {"no": 0, "yes": 1}
-        else:
-            mapping = {val: i for i, val in enumerate(options)}
-
-        mapping_report = {feature: mapping}
-
-        self.df[feature] = self.df[feature].map(mapping)
-        return mapping_report
-
-
     def freetext_and_imginfo_filling(self, feature_name):
         if self.feature_value_type(feature_name) != "freetext":
-            return f"{feature_name} is not a freetext feature."
-        if self.feature_value_type(feature_name) != "BMP":
-            return f"{feature_name} is not a US image feature."
+            return f"{feature_name} is not a free text"
 
-        fill_value = "none"
-        self.df[feature_name] = self.df[feature_name].fillna(fill_value)
+        self.df[feature_name] = self.df[feature_name].fillna("none")
+
         return f"{feature_name}: Filled with missing indicator."
 
 
@@ -168,20 +133,6 @@ class DataPreparation:
         def score_val(col):
             if col not in self.df.columns: return 0
             return self.df[col].astype(str).str.lower().str.strip().map({'yes': 1, 'no': 0}).fillna(0).astype(int)
-
-        for child, parent in self.logic_dependencies.items():
-            if child in self.df.columns and parent in self.df.columns:
-                is_no = self.df[parent].astype(str).str.lower().str.strip() == 'no'
-                mask = self.df[child].isna() & is_no
-                self.df.loc[mask, child] = 0
-
-                remaining_mask = self.df[child].isna()
-                if remaining_mask.any():
-                    v_type = self.feature_value_type(child)
-                    if v_type == "numeric":
-                        self.numeric_filling(child)
-                    else:
-                        self.binary_and_categorical_filling(child)
 
         mask_alv = self.df["Alvarado_Score"].isna()
         if mask_alv.any():
@@ -216,15 +167,55 @@ class DataPreparation:
 
         return "Conditional and Numerical dependencies handled."
 
+    def handle_ultrasound_features(self):
+        all_features = self.grouped_features["Ultrasound"]
+
+        def handle_primary_dependency(row, feature):
+            us_num = row["US_Number"]
+            us_perf = row["US_Performed"]
+
+            us_num_missing = pd.isna(us_num) or us_num == ""
+            us_num_present = not us_num_missing
+            us_perf_missing = pd.isna(us_perf) or us_perf == ""
+
+            if feature == "US_Performed":
+
+                if us_num_present:
+                    return "yes"
+
+                if us_num_missing and us_perf_missing:
+                    return "no"
+
+                return us_perf
+
+            if feature == "US_Number":
+
+                if us_perf == "no":
+                    return np.nan
+
+                if us_perf == "yes" and us_num_missing:
+                    return "missing"
+
+                return us_num
+
+
+            return row[feature]
+
+        for primary_feature in all_features:
+            self.df[primary_feature] = self.df.apply(lambda row:
+                                                     handle_primary_dependency(row, primary_feature), axis=1)
+
     def preparation(self, output_folder):
         self.drop_empty_rows()
         feature_groups = list(self.grouped_features)
         for feature_group in feature_groups:
-            self.handle_features(feature_group)
+            if feature_group != "Ultrasound":
+                self.handle_features(feature_group)
+            print(feature_group)
 
         self.handle_dependent_features()
 
-        self.df = self.df.fillna("None")
+        self.handle_ultrasound_features()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
