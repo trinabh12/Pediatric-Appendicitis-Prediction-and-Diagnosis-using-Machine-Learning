@@ -169,57 +169,64 @@ class DataPreparation:
 
     def handle_ultrasound_features(self):
         all_features = self.grouped_features["Ultrasound"]
+        primary_features = ["US_Number", "US_Performed", "Appendix_on_US"]
+        secondary_features = list(set(all_features) - set(primary_features))
 
-        def handle_primary_dependency(row, feature):
+        def handle_primary_dependency(row, p_feature):
             us_num = row["US_Number"]
             us_perf = row["US_Performed"]
+            appendix_on_us = row["Appendix_on_US"]
 
             us_num_missing = pd.isna(us_num) or us_num == ""
-            us_num_present = not us_num_missing
+            appendix_missing = pd.isna(appendix_on_us) or appendix_on_us == ""
             us_perf_missing = pd.isna(us_perf) or us_perf == ""
 
-            if feature == "US_Performed":
-
-                if us_num_present:
+            if p_feature == "US_Performed":
+                if not us_num_missing:
                     return "yes"
-
                 if us_num_missing and us_perf_missing:
                     return "no"
-
                 return us_perf
-
             if feature == "US_Number":
-
-                if us_perf == "no":
-                    return np.nan
-
+                if us_perf == "no" and us_num_missing:
+                    return "none"
                 if us_perf == "yes" and us_num_missing:
                     return "missing"
-
                 return us_num
+            if p_feature == "Appendix_on_US":
+                if appendix_missing and us_perf_missing:
+                    return "missing"
 
+                if appendix_missing and us_perf == "yes":
+                    return "no"
 
             return row[feature]
 
-        for primary_feature in all_features:
-            self.df[primary_feature] = self.df.apply(lambda row:
-                                                     handle_primary_dependency(row, primary_feature), axis=1)
+
+        for feature in primary_features:
+            self.df[feature] = self.df.apply(lambda row: handle_primary_dependency(row, feature), axis=1)
+
+        for feature in secondary_features:
+            self.df[feature] = self.df[feature].replace(to_replace=[np.nan, None, ""], value="not examined")
+
+        return secondary_features
+
+
+
 
     def preparation(self, output_folder):
         self.drop_empty_rows()
         feature_groups = list(self.grouped_features)
         for feature_group in feature_groups:
-            if feature_group != "Ultrasound":
-                self.handle_features(feature_group)
-            print(feature_group)
+            self.handle_features(feature_group)
 
         self.handle_dependent_features()
-
         self.handle_ultrasound_features()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
+
 
         return "Preparation done!"
 
