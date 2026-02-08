@@ -69,11 +69,12 @@ class DataPreparation:
             self.df[feature_name] = self.df[feature_name].fillna(0)
             return f"{feature_name}: Filled null values with 0."
 
-        if 50 >= missing_pct > 5:
-            self.df[feature_name] = self.df[feature_name].fillna(0)
-            return f"{feature_name}: Filled null values with 0."
+        if 50 >= missing_pct > 10:
+            fill_value = self.df[feature_name].median()
+            self.df[feature_name] = self.df[feature_name].fillna(fill_value)
+            return f"{feature_name}: Filled null values with median."
 
-        if missing_pct <= 5:
+        if missing_pct <= 10:
             skewness = self.df[feature_name].skew()
 
             if abs(skewness) > 1:
