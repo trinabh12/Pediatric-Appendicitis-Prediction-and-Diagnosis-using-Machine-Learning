@@ -29,7 +29,8 @@ class DataPreparation:
 
         df_cleaned = self.df.drop(index=rows_to_drop).reset_index(drop=True)
         self.df = df_cleaned
-        self.missing_counts = {key: value - 1 for key, value in self.missing_counts.items()}
+        self.missing_counts = self.df.isna().sum().to_dict()
+
 
         return self.missing_counts
 
@@ -132,7 +133,8 @@ class DataPreparation:
 
     def handle_dependent_features(self):
         def score_val(col):
-            if col not in self.df.columns: return 0
+            if col not in self.df.columns:
+                return 0
             return self.df[col].astype(str).str.lower().str.strip().map({'yes': 1, 'no': 0}).fillna(0).astype(int)
 
         mask_alv = self.df["Alvarado_Score"].isna()
@@ -228,7 +230,10 @@ class DataPreparation:
             os.makedirs(output_folder)
         self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
 
+        self.missing_counts = self.df.isna().sum().to_dict()
+        for feature in self.df.columns.tolist():
+            if self.missing_counts[feature] == 0:
+                return "Preparation done!"
 
-        return "Preparation done!"
-
-
+            else:
+                return f"missing values remain in {feature}: ", self.missing_counts[feature]
