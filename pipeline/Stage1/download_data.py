@@ -8,6 +8,7 @@ class DataDownloader:
         self.target_folder = target_folder
         self.excel_url = "https://zenodo.org/records/7669442/files/app_data.xlsx"
         self.zip_url = "https://zenodo.org/records/7669442/files/US_Pictures.zip"
+        self.multiple_in_one_url = "https://zenodo.org/records/7669442/files/multiple_in_one"
 
     def download_all(self):
         """Sole purpose: Download Excel and Images zip."""
@@ -18,7 +19,11 @@ class DataDownloader:
         excel_path = os.path.join(self.target_folder, "app_data.xlsx")
         self._request_download(self.excel_url, excel_path)
 
-        # 2. Download and Extract Images
+        # 2. Download multiple_in_one
+        multiple_path = os.path.join(self.target_folder, "multiple_in_one")
+        self._request_download(self.multiple_in_one_url, multiple_path)
+
+        # 3. Download and Extract Images
         zip_path = os.path.join(self.target_folder, "temp_images.zip")
         self._request_download(self.zip_url, zip_path)
 
@@ -30,8 +35,6 @@ class DataDownloader:
         return "[SUCCESS] All data downloaded and extracted."
 
     def _request_download(self, url, save_path):
-
-        """Fixed the PermissionError by ensuring save_path is a file, not a folder."""
         print(f"[DOWNLOADING] {url}...")
         response = requests.get(url)
         if response.status_code == 200:
@@ -39,4 +42,5 @@ class DataDownloader:
                 f.write(response.content)
         else:
             raise Exception(f"Failed to download {url}. Status: {response.status_code}")
+        return "request failed"
 
