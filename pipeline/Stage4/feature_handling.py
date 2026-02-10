@@ -5,7 +5,7 @@ import json
 
 
 class HandleFeatures:
-    def __init__(self, prev_stage, data_dir, excel_data, feature_info, feature_groups):
+    def __init__(self, prev_stage, data_dir, excel_data, feature_info, derived_info, feature_groups):
         dataset = os.path.join(prev_stage, data_dir)
         self.df = pd.read_excel(os.path.join(dataset, excel_data))
 

@@ -9,10 +9,6 @@ class IngestionStage:
     def __init__(self, root_dir, dataset_dir, file_name):
         self.dataset_dir = os.path.join(root_dir, dataset_dir)
         self.file = file_name
-        self.output_data = "raw_data.xlsx"
-        self.output_summary = "feature_summary.json"
-        self.output_info = "feature_info.json"
-        self.output_feature_groups = "feature_grouped.json"
         self.file_path = os.path.join(self.dataset_dir, self.file)
 
         self.df_cases = pd.read_excel(self.file_path, sheet_name="All cases")
@@ -107,22 +103,22 @@ class IngestionStage:
         else:
             os.makedirs(output_folder, exist_ok=True)
 
-            cases_path = os.path.join(output_folder, self.output_data)
+            cases_path = os.path.join(output_folder, "raw_data.xlsx")
             self.df_cases.to_excel(excel_writer=cases_path, index=False)
 
             summary_dict = self.feature_summary()
-            summary_path = os.path.join(output_folder, self.output_summary)
+            summary_path = os.path.join(output_folder, "feature_summary.json")
             with open(summary_path, "w") as f:
                 json.dump(summary_dict, f, indent=4)
 
             info_dict = self.feature_info()
-            info_path = os.path.join(output_folder, self.output_info)
+            info_path = os.path.join(output_folder, "feature_info.json")
             with open(info_path, "w") as f:
                 json.dump(info_dict, f, indent=4)
 
             self.df_summary['Variable Group'] = self.df_summary['Variable Group'].ffill()
             feature_group = self.df_summary.groupby('Variable Group')['Variable'].apply(list).to_dict()
-            feature_group_path = os.path.join(output_folder, self.output_feature_groups)
+            feature_group_path = os.path.join(output_folder,"feature_grouped.json")
             with open(feature_group_path, "w") as f:
                 json.dump(feature_group, f, indent=4)
 

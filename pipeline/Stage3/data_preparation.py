@@ -239,9 +239,13 @@ class DataPreparation:
 
         feature_groups_output_path = os.path.join(output_folder, "feature_groups.json")
         feature_info_output_path = os.path.join(output_folder, "feature_info.json")
+        derived_info_output_path = os.path.join(output_folder, "derived_info.json")
+
+        with open(derived_info_output_path, "w") as f:
+            json.dump(derived_info, f, indent=4)
 
         with open(feature_info_output_path, "w") as f:
-            json.dump(derived_info, f, indent=4)
+            json.dump(self.feature_info, f, indent=4)
 
         with open(feature_groups_output_path, "w") as f:
             json.dump(self.grouped_features, f, indent=4)
