@@ -228,11 +228,20 @@ class DataPreparation:
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
-        self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
-
         self.missing_counts = self.df.isna().sum().to_dict()
         for feature in self.df.columns.tolist():
             if self.missing_counts[feature] == 0:
+                self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
+
+                feature_groups_output_path = os.path.join(output_folder, "feature_groups.json")
+                feature_info_output_path = os.path.join(output_folder, "feature_info.json")
+
+                with open(feature_info_output_path, "w") as f:
+                    json.dump(self.feature_info, f, indent=4)
+
+                with open(feature_groups_output_path, "w") as f:
+                    json.dump(self.grouped_features, f, indent=4)
+
                 return "Preparation done!"
 
             else:

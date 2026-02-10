@@ -1,0 +1,72 @@
+{
+    "Clinical": [
+        "Peritonitis",
+        "Migratory_Pain",
+        "Lower_Right_Abd_Pain",
+        "Contralateral_Rebound_Tenderness",
+        "Ipsilateral_Rebound_Tenderness",
+        "Coughing_Pain",
+        "Psoas_Sign",
+        "Nausea",
+        "Loss_of_Appetite",
+        "Body_Temperature",
+        "Dysuria",
+        "Stool"
+    ],
+    "Demographic / Other": [
+        "Age",
+        "Sex",
+        "Height",
+        "Weight",
+        "BMI",
+        "Length_of_Stay"
+    ],
+    "Diagnosis / Management / Severity": [
+        "Diagnosis_Presumptive",
+        "Diagnosis",
+        "Management",
+        "Severity"
+    ],
+    "Laboratory": [
+        "WBC_Count",
+        "RBC_Count",
+        "Hemoglobin",
+        "RDW",
+        "Thrombocyte_Count",
+        "Neutrophil_Percentage",
+        "Neutrophilia",
+        "Segmented_Neutrophils",
+        "CRP",
+        "Ketones_in_Urine",
+        "RBC_in_Urine",
+        "WBC_in_Urine"
+    ],
+    "Scoring": [
+        "Alvarado_Score",
+        "Paedriatic_Appendicitis_Score"
+    ],
+    "Ultrasound": [
+        "US_Performed",
+        "Appendix_on_US",
+        "Appendix_Diameter",
+        "Free_Fluids",
+        "Appendix_Wall_Layers",
+        "Target_Sign",
+        "Perfusion",
+        "Surrounding_Tissue_Reaction",
+        "Pathological_Lymph_Nodes",
+        "Lymph_Nodes_Location",
+        "Bowel_Wall_Thickening",
+        "Ileus",
+        "Coprostasis",
+        "Meteorism",
+        "Enteritis",
+        "Appendicolith",
+        "Perforation",
+        "Appendicular_Abscess",
+        "Abscess_Location",
+        "Conglomerate_of_Bowel_Loops",
+        "Gynecological_Findings",
+        "US_Number"
+    ]
+}
