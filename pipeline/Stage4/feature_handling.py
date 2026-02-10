@@ -11,8 +11,14 @@ class HandleFeatures:
 
         with open(os.path.join(dataset, feature_info), 'r') as f:
             self.feature_info = json.load(f)
+        with open(os.path.join(dataset, derived_info), 'r') as f:
+            self.derived_info = json.load(f)
         with open(os.path.join(dataset, feature_groups), 'r') as f:
             self.feature_groups = json.load(f)
+
+    def data_type_stabilization(self):
+        
+
 
 
 
