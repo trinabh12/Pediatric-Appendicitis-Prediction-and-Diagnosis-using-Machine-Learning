@@ -53,8 +53,6 @@ class DataPreparation:
                 return "bin_or_cat"
         if self.feature_info[feature_name] == "FreeText":
             return "freetext"
-        if self.feature_info[feature_name] == "Image BMP":
-            return "BMP"
 
     def numeric_filling(self, feature_name):
         if feature_name not in self.df.columns:
@@ -218,10 +216,13 @@ class DataPreparation:
 
 
     def preparation(self, output_folder):
+        derived_info={}
         self.drop_empty_rows()
         feature_groups = list(self.grouped_features)
         for feature_group in feature_groups:
             self.handle_features(feature_group)
+            for feature in self.grouped_features[feature_group]:
+                derived_info[feature] = self.feature_value_type(feature)
 
         self.handle_dependent_features()
         self.handle_ultrasound_features()
@@ -229,20 +230,20 @@ class DataPreparation:
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         self.missing_counts = self.df.isna().sum().to_dict()
+
         for feature in self.df.columns.tolist():
-            if self.missing_counts[feature] == 0:
-                self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
-
-                feature_groups_output_path = os.path.join(output_folder, "feature_groups.json")
-                feature_info_output_path = os.path.join(output_folder, "feature_info.json")
-
-                with open(feature_info_output_path, "w") as f:
-                    json.dump(self.feature_info, f, indent=4)
-
-                with open(feature_groups_output_path, "w") as f:
-                    json.dump(self.grouped_features, f, indent=4)
-
-                return "Preparation done!"
-
-            else:
+            if self.missing_counts[feature] != 0:
                 return f"missing values remain in {feature}: ", self.missing_counts[feature]
+
+        self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
+
+        feature_groups_output_path = os.path.join(output_folder, "feature_groups.json")
+        feature_info_output_path = os.path.join(output_folder, "feature_info.json")
+
+        with open(feature_info_output_path, "w") as f:
+            json.dump(derived_info, f, indent=4)
+
+        with open(feature_groups_output_path, "w") as f:
+            json.dump(self.grouped_features, f, indent=4)
+
+        return "Preparation done!"
