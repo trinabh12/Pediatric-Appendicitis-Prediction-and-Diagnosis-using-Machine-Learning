@@ -19,7 +19,7 @@ class HandleFeatures:
         self.encoding_map ={}
 
     def data_type_stabilization(self):
-        missing_indicators = ['not examined', 'missing', 'nan', 'none', 'null']
+        missing_indicators = ['not examined', 'missing', 'nan', 'none', 'null', 'not observed']
         for feature, category in self.derived_info.items():
             info = self.feature_info.get(feature)
             if feature not in self.df.columns:
@@ -54,20 +54,29 @@ class HandleFeatures:
             elif category == "ultrasound_feature":
                 info = self.feature_info.get(feature)
                 if info == "Continuous":
-                    if isinstance(self.df[feature], str) and self.feature_info[feature] in missing_indicators:
-                        continue
+                    temp_series = self.df[feature].astype(str).str.lower().str.strip()
+                    self.df[feature] = temp_series.replace(missing_indicators, -1)
+                    self.df[feature] = pd.to_numeric(self.df[feature], errors='coerce')
 
                 if isinstance(info, dict) and "Binary" in info:
                     labels = info["Binary"]
                     mapping = {val: i for i, val in enumerate(labels)}
+                    mapping.update({"not examined": -1})
                     self.encoding_map.update({feature: mapping})
-                    self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping)
+                    self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping).fillna(-1)
 
                 if isinstance(info, dict) and "Categorical" in info:
                     labels = info["Categorical"]
                     mapping = {val: i for i, val in enumerate(labels)}
+                    mapping.update({"not examined": -1})
                     self.encoding_map.update({feature: mapping})
-                    self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping)
+                    self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping).fillna(-1)
+
+                if info == "FreeText":
+                    self.df[feature] = self.df[feature].replace('not examined', -1)
+                    mapping = {"examined": "str", "not examined": -1}
+
+                    self.encoding_map.update({feature: mapping})
 
 
 

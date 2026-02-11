@@ -88,78 +88,107 @@
     },
     "US_Performed": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
     },
     "Appendix_on_US": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
     },
     "Free_Fluids": {
         "no": 0,
-        "yes": 1
+        "yes": 1,
+        "not examined": -1
     },
     "Appendix_Wall_Layers": {
         "intact": 0,
         "raised": 1,
         "upset": 2,
-        "partially raised": 3
+        "partially raised": 3,
+        "not examined": -1
     },
     "Target_Sign": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
     },
     "Perfusion": {
         "hyperperfused": 0,
         "hypoperfused": 1,
         "no": 2,
-        "present": 3
+        "present": 3,
+        "not examined": -1
     },
     "Surrounding_Tissue_Reaction": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
     },
     "Pathological_Lymph_Nodes": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
+    },
+    "Lymph_Nodes_Location": {
+        "examined": "str",
+        "not examined": -1
     },
     "Bowel_Wall_Thickening": {
         "no": 0,
-        "yes": 1
+        "yes": 1,
+        "not examined": -1
     },
     "Ileus": {
         "no": 0,
-        "yes": 1
+        "yes": 1,
+        "not examined": -1
     },
     "Coprostasis": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
     },
     "Meteorism": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
     },
     "Enteritis": {
         "yes": 0,
-        "no": 1
+        "no": 1,
+        "not examined": -1
     },
     "Appendicolith": {
         "suspected": 0,
         "yes": 1,
-        "no": 2
+        "no": 2,
+        "not examined": -1
     },
     "Perforation": {
         "no": 0,
         "suspected": 1,
         "yes": 2,
-        "not excluded": 3
+        "not excluded": 3,
+        "not examined": -1
     },
     "Appendicular_Abscess": {
         "no": 0,
         "suspected": 1,
-        "yes": 2
+        "yes": 2,
+        "not examined": -1
+    },
+    "Abscess_Location": {
+        "examined": "str",
+        "not examined": -1
     },
     "Conglomerate_of_Bowel_Loops": {
         "no": 0,
-        "yes": 1
+        "yes": 1,
+        "not examined": -1
+    },
+    "Gynecological_Findings": {
+        "examined": "str",
+        "not examined": -1
     }
 }
