@@ -145,11 +145,33 @@ class HandleFeatures:
         print("Step 4 Success: Metadata and Signal Intensity features created.")
         return self.df
 
+    def apply_categorical_encoding(self):
+        all_categorical_features = [feature for feature, value in self.feature_info.items()
+                                    if isinstance(value, dict) and "Categorical" in value]
+        us_categorical_features = [feature for feature, value in self.derived_info.items()
+                                   if value == "ultrasound_feature"]
+
+        ohe_categorical_features = list(set(all_categorical_features) - set(us_categorical_features))
+
+
+        for feature in ohe_categorical_features:
+            if feature in self.df.columns:
+
+                self.df = pd.get_dummies(
+                    self.df,
+                    columns=[feature],
+                    prefix=feature,
+                    prefix_sep='_',
+                    dtype=int)
+        print("Step 5 Success: One-Hot Encoding applied to multiclass clinical features.")
+        return self.df
+
     def save_data(self, output_folder):
         self.data_type_stabilization()
         self.create_clinical_interactions()
         self.apply_medical_thresholds()
         self.extract_us_signals()
+        self.apply_categorical_encoding()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
