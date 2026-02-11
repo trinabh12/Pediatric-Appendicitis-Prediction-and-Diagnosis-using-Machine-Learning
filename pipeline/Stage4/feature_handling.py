@@ -122,10 +122,34 @@ class HandleFeatures:
         print("Step 3 Success: Pathological Diameter, Fever, and High CRP flags created.")
         return self.df
 
+    def extract_us_signals(self):
+        self.df['Has_Images'] = self.df['US_Number'].apply(
+            lambda x: 0 if str(x).lower() in ['missing', 'nan', 'none', ''] else 1
+        )
+
+        self.df['US_Sequence_Count'] = self.df['US_Number'].apply(
+            lambda x: 0 if str(x).lower() in ['missing', 'nan', 'none', '']
+            else len([i for i in str(x).split(',') if i.strip()])
+        )
+
+        secondary_features = [
+            'Free_Fluids', 'Target_Sign', 'Appendicolith', 'Perfusion', 'Perforation',
+            'Surrounding_Tissue_Reaction', 'Appendicular_Abscess', 'Pathological_Lymph_Nodes',
+            'Bowel_Wall_Thickening', 'Ileus', 'Enteritis'
+        ]
+
+        self.df['Secondary_Findings_Score'] = self.df[
+            [f for f in secondary_features if f in self.df.columns]
+        ].apply(lambda row: (row >= 1).sum(), axis=1)
+
+        print("Step 4 Success: Metadata and Signal Intensity features created.")
+        return self.df
+
     def save_data(self, output_folder):
         self.data_type_stabilization()
         self.create_clinical_interactions()
         self.apply_medical_thresholds()
+        self.extract_us_signals()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
