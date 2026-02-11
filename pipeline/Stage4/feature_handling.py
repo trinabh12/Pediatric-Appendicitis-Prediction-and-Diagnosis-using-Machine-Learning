@@ -103,9 +103,29 @@ class HandleFeatures:
         print("Step 2 Success: Inflammatory Triage, Left Shift, and Classic Presentation Flag created.")
         return self.df
 
+    def apply_medical_thresholds(self):
+        if 'Appendix_Diameter' in self.df.columns:
+            self.df['Pathological_Diameter'] = (
+                (self.df['Appendix_Diameter'] >= 7.0)
+            ).astype(int)
+
+        if 'Body_Temperature' in self.df.columns:
+            self.df['Fever_Flag'] = (
+                (self.df['Body_Temperature'] >= 38.0)
+            ).astype(int)
+
+        if 'CRP' in self.df.columns:
+            self.df['High_CRP_Flag'] = (
+                (self.df['CRP'] >= 10.0)
+            ).astype(int)
+
+        print("Step 3 Success: Pathological Diameter, Fever, and High CRP flags created.")
+        return self.df
+
     def save_data(self, output_folder):
         self.data_type_stabilization()
         self.create_clinical_interactions()
+        self.apply_medical_thresholds()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
