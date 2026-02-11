@@ -170,17 +170,19 @@ class DataPreparation:
 
     def handle_ultrasound_features(self):
         all_features = self.grouped_features["Ultrasound"]
-        primary_features = ["US_Number", "US_Performed", "Appendix_on_US"]
+        primary_features = [ "Appendix_on_US", "US_Number", "US_Performed", "Appendix_Diameter"]
         secondary_features = list(set(all_features) - set(primary_features))
 
         def handle_primary_dependency(row, p_feature):
             us_num = row["US_Number"]
             us_perf = row["US_Performed"]
             appendix_on_us = row["Appendix_on_US"]
+            appendix_diam = row["Appendix_Diameter"]
 
             us_num_missing = pd.isna(us_num) or us_num == ""
             appendix_missing = pd.isna(appendix_on_us) or appendix_on_us == ""
             us_perf_missing = pd.isna(us_perf) or us_perf == ""
+            no_appendix_diam = pd.isna(appendix_diam) or appendix_diam == ""
 
             if p_feature == "US_Performed":
                 if not us_num_missing:
@@ -197,15 +199,27 @@ class DataPreparation:
             if p_feature == "Appendix_on_US":
                 if appendix_missing and us_perf_missing:
                     return "missing"
-
+                if isinstance(appendix_diam, float):
+                    return "yes"
                 if appendix_missing and us_perf == "yes":
                     return "no"
+                if appendix_on_us == "yes" and no_appendix_diam:
+                    return "no"
+
+            if p_feature == "Appendix_Diameter":
+                if appendix_on_us == "no" and no_appendix_diam:
+                    return "not observed"
+                if appendix_on_us == "yes" and no_appendix_diam:
+                    return "not observed"
+                if appendix_on_us == "missing" and no_appendix_diam:
+                    return "not observed"
+
 
             return row[feature]
 
-
         for feature in primary_features:
             self.df[feature] = self.df.apply(lambda row: handle_primary_dependency(row, feature), axis=1)
+
 
         for feature in secondary_features:
             self.df[feature] = self.df[feature].replace(to_replace=[np.nan, None, ""], value="not examined")
@@ -233,7 +247,9 @@ class DataPreparation:
 
         for feature in self.df.columns.tolist():
             if self.missing_counts[feature] != 0:
+                self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
                 return f"missing values remain in {feature}: ", self.missing_counts[feature]
+
 
         self.df.to_excel(os.path.join(output_folder, "prepared_data.xlsx"), index=False)
 
