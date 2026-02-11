@@ -16,7 +16,7 @@ class HandleFeatures:
         with open(os.path.join(dataset, feature_groups), 'r') as f:
             self.feature_groups = json.load(f)
 
-        self.encoding_map ={}
+        self.feature_value_map ={}
 
     def data_type_stabilization(self):
         missing_indicators = ['not examined', 'missing', 'nan', 'none', 'null', 'not observed']
@@ -42,13 +42,13 @@ class HandleFeatures:
                     else:
                         mapping = {val: i for i, val in enumerate(labels)}
 
-                    self.encoding_map.update({feature: mapping})
+                    self.feature_value_map.update({feature: mapping})
                     self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping)
 
                 if isinstance(info, dict) and "Categorical" in info:
                     labels = info["Categorical"]
                     mapping = {val: i for i, val in enumerate(labels)}
-                    self.encoding_map.update({feature: mapping})
+                    self.feature_value_map.update({feature: mapping})
                     self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping)
 
             elif category == "ultrasound_feature":
@@ -62,29 +62,50 @@ class HandleFeatures:
                     labels = info["Binary"]
                     mapping = {val: i for i, val in enumerate(labels)}
                     mapping.update({"not examined": -1})
-                    self.encoding_map.update({feature: mapping})
+                    self.feature_value_map.update({feature: mapping})
                     self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping).fillna(-1)
 
                 if isinstance(info, dict) and "Categorical" in info:
                     labels = info["Categorical"]
                     mapping = {val: i for i, val in enumerate(labels)}
                     mapping.update({"not examined": -1})
-                    self.encoding_map.update({feature: mapping})
+                    self.feature_value_map.update({feature: mapping})
                     self.df[feature] = self.df[feature].astype(str).str.lower().str.strip().map(mapping).fillna(-1)
 
                 if info == "FreeText":
                     self.df[feature] = self.df[feature].replace('not examined', -1)
                     mapping = {"examined": "str", "not examined": -1}
 
-                    self.encoding_map.update({feature: mapping})
+                    self.feature_value_map.update({feature: mapping})
 
 
 
         print("Success: Data types stabilized using derived_info categories.")
         return self.df
 
+    def create_clinical_interactions(self):
+
+        if 'WBC_Count' in self.df.columns and 'CRP' in self.df.columns:
+            self.df['Inflammatory_Triage'] = self.df['WBC_Count'] * self.df['CRP']
+
+        if 'Neutrophil_Percentage' in self.df.columns and 'WBC_Count' in self.df.columns:
+            self.df['Left_Shift_Signal'] = self.df.apply(
+                lambda row: row['Neutrophil_Percentage'] / row['WBC_Count']
+                if row['WBC_Count'] > 0 else 0, axis=1
+            )
+
+        if 'Migratory_Pain' in self.df.columns and 'Lower_Right_Abd_Pain' in self.df.columns:
+            self.df['Classic_Presentation_Flag'] = (
+                    (self.df['Migratory_Pain'] == 1) &
+                    (self.df['Lower_Right_Abd_Pain'] == 1)
+            ).astype(int)
+
+        print("Step 2 Success: Inflammatory Triage, Left Shift, and Classic Presentation Flag created.")
+        return self.df
+
     def save_data(self, output_folder):
         self.data_type_stabilization()
+        self.create_clinical_interactions()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
@@ -93,7 +114,7 @@ class HandleFeatures:
         self.df.to_excel(os.path.join(output_folder, "engineered_data.xlsx"), index=False)
 
         encoding_map_output_path = os.path.join(output_folder, "encoding_map.json")
-        print(len(list(self.encoding_map)))
+        print(len(list(self.feature_value_map)))
 
         with open(encoding_map_output_path, "w") as f:
-            json.dump(self.encoding_map, f, indent=4)
+            json.dump(self.feature_value_map, f, indent=4)
