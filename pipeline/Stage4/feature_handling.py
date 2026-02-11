@@ -156,13 +156,17 @@ class HandleFeatures:
 
         for feature in ohe_categorical_features:
             if feature in self.df.columns:
+                mapping = self.feature_value_map.get(feature, {})
+                reverse_map = {v: k for k, v in mapping.items() if isinstance(v, (int, float))}
+                self.df[feature] = self.df[feature].map(reverse_map).fillna(self.df[feature])
 
                 self.df = pd.get_dummies(
                     self.df,
                     columns=[feature],
                     prefix=feature,
-                    prefix_sep='_',
-                    dtype=int)
+                    prefix_sep=':',
+                    dtype=int
+                )
         print("Step 5 Success: One-Hot Encoding applied to multiclass clinical features.")
         return self.df
 
