@@ -2,6 +2,7 @@ import os
 import shutil
 import cv2
 import numpy as np
+import json
 
 
 class ImageProcessor:
@@ -41,16 +42,12 @@ class ImageProcessor:
                 else:
                     break
 
-            # 2. Specific Collision Logic for your .png.bmp vs .bmp case
             if stem in seen_stems:
                 print(f"Collision detected for stem: {stem}")
-                # Rename the PREVIOUS file we saved to .1
-                prev_filename = seen_stems[stem]
                 prev_path = os.path.join(self.intermediate_dir, f"{stem}.bmp")
                 if os.path.exists(prev_path):
                     os.rename(prev_path, os.path.join(self.intermediate_dir, f"{stem}.1.bmp"))
 
-                # Set the CURRENT file to be .2
                 new_filename = f"{stem}.2.bmp"
             else:
                 new_filename = f"{stem}.bmp"
@@ -58,14 +55,12 @@ class ImageProcessor:
 
             new_path = os.path.join(self.intermediate_dir, new_filename)
 
-            # 3. Encoding-safe Read/Write
             img_array = np.fromfile(old_path, np.uint8)
             img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
 
             if img is not None:
                 _, im_buf_arr = cv2.imencode(".bmp", img)
                 im_buf_arr.tofile(new_path)
-                # Remove the old messy file
                 if old_path != new_path:
                     os.remove(old_path)
             else:
@@ -108,38 +103,80 @@ class ImageProcessor:
 
         return len(missing) == 0
 
+    def segregate_views(self, output_dir):
+        """Moves files into View_X folders and returns a list for the Merge Script."""
+        if not os.path.exists(self.intermediate_dir):
+            print("Error: Run any_to_bmp first!")
+            return []
 
+        if os.path.exists(output_dir):
+            shutil.rmtree(output_dir)
+        os.makedirs(output_dir)
 
-    def segregate_views(self):
-        all_files = [f for f in os.listdir(self.img_folder)
-                     if str(self.any_to_bmp(f)).lower().endswith(".bmp")]
-        registry = {}
+        all_files = os.listdir(self.intermediate_dir)
+        registry_list = []
 
-        print(f"Processing {len(all_files)} images...")
-        print(len(self.multi_img))
         for filename in all_files:
-            filename = str(filename)
-
             parts = filename.split(".")
             subject_id = parts[0]
-            if " " in str(parts[1]):
-                view_id = str(parts[1]).split(" ")[0]
+            if ' ' in parts[1]:
+                raw_view_part = parts[1].split(' ')[0]
             else:
-                view_id = str(parts[1])[0]
+                raw_view_part = parts[1][0]
 
-            view_folder_name = f"View_{view_id}"
-            registry.update({
+
+            view_folder_name = f"View_{raw_view_part}"
+            target_folder = os.path.join(output_dir, view_folder_name)
+            os.makedirs(target_folder, exist_ok=True)
+
+            shutil.move(os.path.join(self.intermediate_dir, filename),
+                        os.path.join(target_folder, filename))
+
+            registry_list.append({
                 "Subject_ID": subject_id,
-                "View_ID": view_id,
-                "Original_Filename": filename,
-                "Internal_Path": os.path.join(view_folder_name, filename)
+                "View_ID": raw_view_part,
+                "Final_Filename": filename,
+                "Relative_Path": os.path.join(view_folder_name, filename)
             })
 
-        return registry
+        return registry_list
+
+    def process_image_data(self, output_dir):
+        self.any_to_bmp()
+        self.verify_conversion()
+
+        registry_list = self.segregate_views(output_dir)
+        subject_map = {}
+        for item in registry_list:
+            sub_id = item['Subject_ID']
+            if sub_id not in subject_map:
+                subject_map[sub_id] = []
+            subject_map[sub_id].append({
+                "view_id": item['View_ID'],
+                "path": item['Relative_Path'],
+                "file": item['Final_Filename']
+            })
+
+        json_path = os.path.join(output_dir, "image_registry.json")
+        with open(json_path, 'w') as f:
+            json.dump(subject_map, f, indent=4)
+
+        if os.path.exists(self.intermediate_dir):
+            shutil.rmtree(self.intermediate_dir)
+            print(f"Cleanup: Removed {self.intermediate_dir}")
+
+        print("-" * 30)
+        print(f"Final Images organized in: {output_dir}")
+        print(f"Registry created: {json_path}")
+
+        return subject_map
 
 
-img_pro = ImageProcessor("../Regensburg Pediatric Appendicitis Dataset", "multiple_in_one", "US_Pictures")
 
-print(img_pro.any_to_bmp())
-print(img_pro.verify_conversion())
+
+
+
+
+
+
 
