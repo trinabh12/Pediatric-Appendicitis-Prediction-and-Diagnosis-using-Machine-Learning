@@ -6,17 +6,12 @@ import json
 
 
 class ImageProcessor:
-    def __init__(self, data_dir, multi_image_file_name, img_dir):
-        filenames = []
-        with open(os.path.join(data_dir, multi_image_file_name), 'r') as file:
-            for line in file:
-                clean_line = line.strip().split('] ')[-1] if ']' in line else line.strip()
-                if clean_line:
-                    filenames.append(clean_line)
-
-            self.multi_img = filenames
-            self.img_folder = os.path.join(data_dir, img_dir)
-            self.intermediate_dir = img_dir + "-intermediate"
+    def __init__(self,prev_stage, img_dir, image_validation_report):
+        self.img_folder = os.path.join(prev_stage, img_dir)
+        self.image_report = os.path.join(self.img_folder, image_validation_report)
+        with open(self.image_report, 'r') as file:
+            self.image_report = json.load(file)
+        self.intermediate_dir = img_dir + "-intermediate"
 
     def any_to_bmp(self):
         if os.path.exists(self.intermediate_dir):
@@ -29,6 +24,10 @@ class ImageProcessor:
         files = os.listdir(self.intermediate_dir)
         seen_stems = {}
         for filename in files:
+            if filename == "image_validation_report.json":
+                os.remove(os.path.join(self.intermediate_dir, filename))
+                continue
+
             old_path = os.path.join(self.intermediate_dir, filename)
 
             if os.path.isdir(old_path):
