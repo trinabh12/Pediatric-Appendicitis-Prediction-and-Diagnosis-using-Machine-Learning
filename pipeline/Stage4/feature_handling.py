@@ -1,10 +1,12 @@
 import os
 import pandas as pd
+import shutil
 import json
 
 
 class HandleFeatures:
-    def __init__(self, prev_stage, data_dir, excel_data, feature_info, derived_info, feature_groups):
+    def __init__(self, prev_stage, data_dir, excel_data, feature_info,
+                 derived_info, feature_groups, image_dir, image_registry_path):
         dataset = os.path.join(prev_stage, data_dir)
         self.df = pd.read_excel(os.path.join(dataset, excel_data))
 
@@ -15,6 +17,8 @@ class HandleFeatures:
         with open(os.path.join(dataset, feature_groups), 'r') as f:
             self.feature_groups = json.load(f)
 
+        self.image_registry_path = os.path.join(prev_stage, image_registry_path)
+        self.image_dir = os.path.join(prev_stage, image_dir)
         self.feature_value_map ={}
 
     def data_type_stabilization(self):
@@ -220,6 +224,78 @@ class HandleFeatures:
         print("Step 7 Success: Feature groups aligned for Stage 6 Importance analysis.")
         return self.feature_groups
 
+    def merge_image_registry(self):
+        if not self.image_registry_path or not os.path.exists(self.image_registry_path):
+            print(f"Warning: Image registry not found. Skipping merge.")
+            return self.df
+
+        with open(self.image_registry_path, 'r') as f:
+            registry = json.load(f)
+
+        if 'US_Number' not in self.df.columns:
+            raise KeyError("CRITICAL: 'US_Number' column not found in clinical data. Cannot link images.")
+
+        self.df['merge_key'] = pd.to_numeric(self.df['US_Number'], errors='coerce').fillna(-1).astype(int)
+
+        image_rows = []
+        for sub_id, views in registry.items():
+            row = {'merge_key': int(sub_id)}
+            for v in views:
+                col_name = f"View_{v['view_id']}_Path"
+                if col_name in row:
+                    col_name = f"{col_name}_alt"
+                row[col_name] = v['path']
+            image_rows.append(row)
+
+        df_images = pd.DataFrame(image_rows)
+
+        self.df = pd.merge(self.df, df_images, on='merge_key', how='left')
+
+        self.df['Subject_ID'] = self.df['merge_key']
+        self.df.drop(columns=['merge_key'], inplace=True)
+
+        cols = ['Subject_ID'] + [c for c in self.df.columns if c != 'Subject_ID']
+        self.df = self.df[cols]
+
+        path_cols = [c for c in self.df.columns if '_Path' in c]
+        if path_cols:
+            self.df[path_cols] = self.df[path_cols].fillna("MISSING_IMAGE")
+            print(f"Step 8 Success: Merged images using 'US_Number' as key.")
+
+        return self.df
+
+    def transfer_image_data(self, output_folder):
+        source_dir = os.path.dirname(self.image_registry_path)
+        target_img_dir = output_folder
+
+        if not os.path.exists(source_dir):
+            print(f"Error: Source image directory not found at {source_dir}")
+            return 1
+
+        if os.path.exists(target_img_dir):
+            shutil.rmtree(target_img_dir)
+        os.makedirs(target_img_dir)
+
+        print(f"Step 9: Transferring only View assets to {target_img_dir}...")
+
+        for item in os.listdir(source_dir):
+            item = str(item)
+            s_item_path = os.path.join(source_dir, item)
+
+            if os.path.isdir(s_item_path) and item.startswith("View_"):
+                d_item_path = os.path.join(target_img_dir, item)
+                shutil.copytree(s_item_path, d_item_path)
+
+        path_cols = [c for c in self.df.columns if '_Path' in c]
+        for col in path_cols:
+            self.df[col] = self.df[col].apply(
+                lambda x: x if x == "MISSING_IMAGE" else os.path.join("image", os.path.basename(os.path.dirname(x)),
+                                                                      os.path.basename(x))
+            )
+
+        print(f"Step 9 Success: View folders transferred. JSON registry excluded.")
+        return 0
+
     def save_data(self, output_folder):
         self.data_type_stabilization()
         self.create_clinical_interactions()
@@ -228,6 +304,7 @@ class HandleFeatures:
         self.apply_categorical_encoding()
         self.remove_leakage_features()
         self.align_feature_groups()
+        self.merge_image_registry()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
