@@ -5,7 +5,11 @@ from download_data import DataDownloader
 ROOT_DIR = "../"
 DATASET_DIR = "Regensburg Pediatric Appendicitis Dataset"
 FILE_NAME = "app_data.xlsx"
+IMAGE_DIR = "US_Pictures"
 TARGET_FOLDER = "ingestion_data"
+
+OUTPUT_TABULAR = os.path.join(TARGET_FOLDER, "tabular")
+OUTPUT_IMAGE = os.path.join(TARGET_FOLDER, "image")
 
 raw_data_path = os.path.join(ROOT_DIR, DATASET_DIR, FILE_NAME)
 
@@ -22,8 +26,10 @@ def run_stage1():
         print(f"[STAGE 1] Raw data found at {raw_data_path}. Skipping download.")
 
     print(f"[STAGE 1] Starting ingestion to '{TARGET_FOLDER}'...")
-    ingestion = IngestionStage(ROOT_DIR, DATASET_DIR, FILE_NAME)
-    ingestion.extract_xlsx(TARGET_FOLDER)
+    ingestion = IngestionStage(ROOT_DIR, DATASET_DIR, FILE_NAME, IMAGE_DIR)
+    ingestion.extract_tabular(OUTPUT_TABULAR)
+    ingestion.extract_image(OUTPUT_IMAGE)
+
     print("[STAGE 1] Ingestion successful.")
 
 

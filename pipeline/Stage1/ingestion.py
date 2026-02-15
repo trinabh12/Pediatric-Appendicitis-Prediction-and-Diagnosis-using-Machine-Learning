@@ -6,10 +6,10 @@ import ast
 
 class IngestionStage:
 
-    def __init__(self, root_dir, dataset_dir, file_name):
+    def __init__(self, root_dir, dataset_dir, file_name, img_dir):
         self.dataset_dir = os.path.join(root_dir, dataset_dir)
-        self.file = file_name
-        self.file_path = os.path.join(self.dataset_dir, self.file)
+        self.file_path = os.path.join(self.dataset_dir, file_name)
+        self.img_data_path = os.path.join(self.dataset_dir, img_dir)
 
         self.df_cases = pd.read_excel(self.file_path, sheet_name="All cases")
         self.df_summary = pd.read_excel(self.file_path, sheet_name="Data Summary")
@@ -97,7 +97,7 @@ class IngestionStage:
 
         return info
 
-    def extract_xlsx(self, output_folder: str):
+    def extract_tabular(self, output_folder: str):
         if not os.path.exists(self.file_path):
             raise FileNotFoundError(f"File not found:{self.file_path}")
         else:
@@ -118,8 +118,39 @@ class IngestionStage:
 
             self.df_summary['Variable Group'] = self.df_summary['Variable Group'].ffill()
             feature_group = self.df_summary.groupby('Variable Group')['Variable'].apply(list).to_dict()
-            feature_group_path = os.path.join(output_folder,"feature_grouped.json")
+            feature_group_path = os.path.join(output_folder, "feature_grouped.json")
             with open(feature_group_path, "w") as f:
                 json.dump(feature_group, f, indent=4)
 
         return 0
+
+    def extract_image(self, output_folder: str):
+        if not os.path.exists(self.img_data_path):
+            raise FileNotFoundError(f"Image directory not found: {self.img_data_path}")
+
+            # Create the subfolder for images within the output directory
+        os.makedirs(output_folder, exist_ok=True)
+
+        print(f"Ingesting images from {self.img_data_path}...")
+
+        import shutil
+
+        # List all files in the source directory
+        files = os.listdir(self.img_data_path)
+        copied_count = 0
+
+        for filename in files:
+            # Check if file is an image (handling .bmp, .png, .jpg, .jpeg)
+            if str(filename).lower().endswith(('.bmp', '.png', '.jpg', '.jpeg')):
+                src_path = os.path.join(self.img_data_path, str(filename))
+                dst_path = os.path.join(output_folder, str(filename))
+
+                # Copy the file while preserving metadata
+                shutil.copy2(src_path, dst_path)
+                copied_count += 1
+
+        print(f"Successfully ingested {copied_count} images into {output_folder}")
+
+        return copied_count
+
+
