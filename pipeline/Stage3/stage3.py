@@ -60,7 +60,7 @@ def run_stage3():
         print(f"[STAGE 3] Error encountered during image preparation.")
 
     # 3. Cleanup: Remove residual directory
-    # We check if it exists and is empty (or contains only processed subfolders)
+    # We check if it exists and is empty (or contains only processed sub-folders)
     residual_path = DATASET_DIR
     if os.path.exists(residual_path):
         print(f"[STAGE 3] Cleaning up residual folder: {residual_path}")
