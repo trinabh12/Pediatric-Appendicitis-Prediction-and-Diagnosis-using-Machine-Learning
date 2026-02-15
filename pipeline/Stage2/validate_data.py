@@ -2,14 +2,16 @@ import os
 import json
 import re
 import pandas as pd
+import shutil
 
 
 class ValidationAndProfiling:
 
-    def __init__(self, prev_stage, dataset_dir, file_name, data_info, data_summary, data_grouped):
+    def __init__(self, prev_stage, dataset_dir, file_name, data_info, data_summary, data_grouped, img_data):
         self.dataset = os.path.join(prev_stage, dataset_dir)
         self.file_path = os.path.join(self.dataset, file_name)
         self.raw_data = pd.read_excel(self.file_path)
+        self.img_data_path = os.path.join(prev_stage, img_data)
 
         info_path = os.path.join(self.dataset, data_info)
         summary_path = os.path.join(self.dataset, data_summary)
@@ -155,7 +157,48 @@ class ValidationAndProfiling:
 
         return updated_grouped
 
-    def save_report(self, output_folder: str):
+    def validate_image_data(self):
+        """
+        Analyzes image names to derive the format and check for anomalies.
+        Returns a summary of the image naming structure.
+        """
+        if not os.path.exists(self.img_data_path):
+            return {"error": "Image path not found"}
+
+        img_files = [f for f in os.listdir(self.img_data_path)
+                     if os.path.isfile(os.path.join(self.img_data_path, f))]
+
+        # Regex: starts with digits, a dot, then digits (e.g., 101.1)
+        standard_pattern = re.compile(r"^\d+\.\d+")
+
+        valid_files = []
+        anomalies = []
+        formats = {}
+
+        for f in img_files:
+            f = str(f)
+            if standard_pattern.match(f):
+                valid_files.append(f)
+                # Derive format by counting segments split by dots
+                # e.g., '9.1 Appendix.bmp' -> 3 segments
+                num_segments = len(f.split('.'))
+                fmt_tag = f"{num_segments}-segment-dot-notation"
+                formats[fmt_tag] = formats.get(fmt_tag, 0) + 1
+            else:
+                anomalies.append(f)
+
+        validation_summary = {
+            "status": "Success" if not anomalies else "Warnings Found",
+            "total_images": len(img_files),
+            "naming_format": "SubjectID.ViewID [Description].ext",
+            "format_distribution": formats,
+            "anomaly_count": len(anomalies),
+            "anomaly_list": anomalies
+        }
+
+        return validation_summary
+
+    def save_tab_report(self, output_folder: str):
         os.makedirs(output_folder, exist_ok=True)
         missing_dict = self.missing_summary()
 
@@ -175,4 +218,33 @@ class ValidationAndProfiling:
         with open(grouped_path, 'w') as f:
             json.dump(self.update_grouped_features(), f, indent=4)
 
+        return 0
+
+    def save_img_report(self, output_folder: str):
+        os.makedirs(output_folder, exist_ok=True)
+
+        img_files = [f for f in os.listdir(self.img_data_path)
+                     if self.img_data_path]
+
+        print(f"Copying {len(img_files)} images to validation folder...")
+
+        for filename in img_files:
+            src = os.path.join(self.img_data_path, str(filename))
+            dst = os.path.join(output_folder, str(filename))
+            shutil.copy2(src, dst)  # copy2 preserves metadata
+
+        # 3. Save the JSON metadata report
+        report_data = {
+            "validation_stage": "Stage 2",
+            "source_path": self.img_data_path,
+            "destination_path": output_folder,
+            "total_files_processed": len(img_files),
+            "files": sorted(img_files)
+        }
+
+        report_path = os.path.join(output_folder, "image_validation_report.json")
+        with open(report_path, "w", encoding="utf-8") as f:
+            json.dump(report_data, f, indent=4)
+
+        print(f"Image validation report and physical copy completed at: {output_folder}")
         return 0
