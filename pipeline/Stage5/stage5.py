@@ -7,7 +7,6 @@ from lineage_manager import LineageManager
 PREV_STAGE = "../Stage4"
 DATASET_DIR = "engineered features"
 
-# Standardized Input Sub-folders (as established in Stage 4)
 TABULAR_SUB = os.path.join(DATASET_DIR, "tabular")
 IMAGE_SUB = os.path.join(DATASET_DIR, "image")
 
@@ -44,7 +43,6 @@ def run_stage5():
         print(f"[STAGE 5] CRITICAL ERROR: {e}")
         sys.exit(1)
 
-    # Execute Versioning, Splitting, and Image Transfer
     version_id = vl.run_versioning_and_split(TARGET_FOLDER)
 
     print("-" * 30)
