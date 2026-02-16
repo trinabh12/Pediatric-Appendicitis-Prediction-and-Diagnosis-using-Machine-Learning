@@ -20,7 +20,7 @@ IMAGE_REGISTRY = os.path.join(PREV_STAGE, IMAGE_INPUT, "image_registry.json")
 OUTPUT_DIR = "engineered features"
 OUTPUT_TABULAR = os.path.join(OUTPUT_DIR, "tabular")
 # Note: We pass the root OUTPUT_DIR to transfer_image_data to manage its own 'image' subfolder
-OUTPUT_IMAGE_ROOT = OUTPUT_DIR
+OUTPUT_IMAGE_ROOT = os.path.join(OUTPUT_DIR, "image")
 
 
 def run_stage4():
