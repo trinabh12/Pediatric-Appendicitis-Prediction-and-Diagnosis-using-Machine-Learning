@@ -1,88 +1,59 @@
 import os
-import pandas as pd
-import json
-import hashlib
-from datetime import datetime
+import sys
 import shutil
+from lineage_manager import LineageManager
+
+# Path Configurations
+PREV_STAGE = "../Stage4"
+DATASET_DIR = "engineered features"
+
+# Standardized Input Sub-folders (as established in Stage 4)
+TABULAR_SUB = os.path.join(DATASET_DIR, "tabular")
+IMAGE_SUB = os.path.join(DATASET_DIR, "image")
+
+# Input Filenames
+XLSX_INPUT = "engineered_data.xlsx"
+ENCODING_REPORT = "encoding_map.json"
+FEATURE_REPORT = "engineered_feature_groups.json"
+
+# Output Configuration
+TARGET_FOLDER = "training dataset"
 
 
-class DataVersioning:
-    def __init__(self, data_path, metadata_dir, version_root="data_versions"):
-        self.data_path = data_path
-        self.metadata_dir = metadata_dir
-        self.version_root = version_root
+def run_stage5():
+    print(f"[STAGE 5] Initializing Data Lineage and Stratified Splitting...")
 
-        # Load the data to generate stats
-        self.df = pd.read_excel(data_path)
+    # Ensure clean output directory for the final dataset
+    if os.path.exists(TARGET_FOLDER):
+        print(f"[STAGE 5] Refreshing target folder: {TARGET_FOLDER}")
+        shutil.rmtree(TARGET_FOLDER)
+    os.makedirs(TARGET_FOLDER)
 
-        # Generate a unique Version Tag based on timestamp
-        self.version_tag = datetime.now().strftime("v_%Y%m%d_%H%M%S")
-        self.version_dir = os.path.join(self.version_root, self.version_tag)
+    # Initialize the Lineage Manager
+    # This handles UTF-8 encoding and stratified splitting logic
+    try:
+        vl = LineageManager(
+            PREV_STAGE,
+            TABULAR_SUB,
+            XLSX_INPUT,
+            ENCODING_REPORT,
+            FEATURE_REPORT,
+            IMAGE_SUB
+        )
+    except FileNotFoundError as e:
+        print(f"[STAGE 5] CRITICAL ERROR: {e}")
+        sys.exit(1)
 
-    def _calculate_hash(self, file_path):
-        sha256_hash = hashlib.sha256()
-        with open(file_path, "rb") as f:
-            for byte_block in iter(lambda: f.read(4096), b""):
-                sha256_hash.update(byte_block)
-        return sha256_hash.hexdigest()
+    # Execute Versioning, Splitting, and Image Transfer
+    version_id = vl.run_versioning_and_split(TARGET_FOLDER)
 
-    def create_lineage_report(self, stage_name="Feature Engineering"):
-        report = {
-            "version_tag": self.version_tag,
-            "timestamp": datetime.now().isoformat(),
-            "stage": stage_name,
-            "data_fingerprint": self._calculate_hash(self.data_path),
-            "statistics": {
-                "row_count": int(self.df.shape[0]),
-                "feature_count": int(self.df.shape[1]),
-                "target_balance": self.df['Diagnosis'].value_counts(normalize=True).to_dict()
-                if 'Diagnosis' in self.df.columns else "N/A"
-            },
-            "input_files": [
-                os.path.basename(self.data_path),
-                "encoding_map.json",
-                "feature_groups_final.json"
-            ]
-        }
-        return report
+    print("-" * 30)
+    print(f"[STAGE 5] VERSION LOCKED: {version_id}")
+    print(f"[STAGE 5] Final dataset prepared in '{TARGET_FOLDER}'")
 
-    def finalize_version(self):
-        """Archives the data, metadata, and lineage report into a versioned folder."""
-        if not os.path.exists(self.version_dir):
-            os.makedirs(self.version_dir)
 
-        # 1. Generate and save the lineage report
-        report = self.create_lineage_report()
-        with open(os.path.join(self.version_dir, "lineage_manifest.json"), "w") as f:
-            json.dump(report, f, indent=4)
+    print(f"[STAGE 5] Pipeline ready for Stage 6 (Model Training).")
 
-        # 2. Copy the data file
-        shutil.copy(self.data_path, os.path.join(self.version_dir, "engineered_data.xlsx"))
 
-        # 3. Copy the metadata files
-        metadata_files = ["encoding_map.json", "feature_groups_final.json"]
-        for meta_file in metadata_files:
-            src = os.path.join(self.metadata_dir, meta_file)
-            if os.path.exists(src):
-                shutil.copy(src, os.path.join(self.version_dir, meta_file))
-
-        # 4. Update the Master Lineage Log (Central registry of all versions)
-        master_log_path = os.path.join(self.version_root, "master_lineage_log.json")
-        master_log = []
-
-        if os.path.exists(master_log_path):
-            with open(master_log_path, "r") as f:
-                master_log = json.load(f)
-
-        master_log.append({
-            "version": self.version_tag,
-            "path": self.version_dir,
-            "timestamp": report["timestamp"],
-            "hash": report["data_fingerprint"]
-        })
-
-        with open(master_log_path, "w") as f:
-            json.dump(master_log, f, indent=4)
-
-        print(f"Stage 5 Success: Version {self.version_tag} archived with full lineage tracking.")
-        return self.version_tag
+if __name__ == "__main__":
+    run_stage5()
