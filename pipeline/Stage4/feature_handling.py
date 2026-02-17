@@ -192,7 +192,6 @@ class HandleFeatures:
 
     def align_feature_groups(self):
         updated_groups = {}
-
         current_columns = self.df.columns.tolist()
 
         for group_name, features in self.feature_groups.items():
@@ -200,28 +199,30 @@ class HandleFeatures:
             for feat in features:
                 if feat in current_columns:
                     new_group_list.append(feat)
-
                 ohe_cols = [c for c in current_columns if c.startswith(f"{feat}:")]
                 new_group_list.extend(ohe_cols)
-
             updated_groups[group_name] = list(set(new_group_list))
 
-        engineered_list = [
-            'Inflammatory_Triage', 'Left_Shift_Signal', 'Classic_Presentation_Flag',
-            'Pathological_Diameter', 'Fever_Flag', 'High_CRP_Flag',
-            'Has_Images', 'US_Sequence_Count', 'Secondary_Findings_Score'
+        # 2. Categorize Engineered Features for Phase 1 (Clinical/Labs)
+        clinical_eng = ['Classic_Presentation_Flag', 'Fever_Flag']
+        lab_eng = ['Inflammatory_Triage', 'Left_Shift_Signal', 'High_CRP_Flag']
+
+        updated_groups["clinical_derived"] = [f for f in clinical_eng if f in current_columns]
+        updated_groups["lab_derived"] = [f for f in lab_eng if f in current_columns]
+
+        # 3. Categorize Engineered Features for Phase 2 (Ultrasound)
+        us_eng = [
+            'Pathological_Diameter', 'Has_Images',
+            'US_Sequence_Count', 'Secondary_Findings_Score'
         ]
+        updated_groups["ultrasound_derived"] = [f for f in us_eng if f in current_columns]
 
-        actual_engineered = [f for f in engineered_list if f in current_columns]
-
-        if "engineered_features" not in updated_groups:
-            updated_groups["engineered_features"] = actual_engineered
-        else:
-            updated_groups["engineered_features"].extend(actual_engineered)
-            updated_groups["engineered_features"] = list(set(updated_groups["engineered_features"]))
+        # 4. Create Image Path Group for Phase 2/3 Image Processing
+        view_cols = [c for c in current_columns if c.startswith("View_") and c.endswith("_Path")]
+        updated_groups["image_paths"] = view_cols
 
         self.feature_groups = updated_groups
-        print("Step 7 Success: Feature groups aligned for Stage 6 Importance analysis.")
+        print("Step 7 Success: Feature groups refined into Clinical, Lab, and US derivation groups.")
         return self.feature_groups
 
     def merge_image_registry(self):
@@ -297,14 +298,15 @@ class HandleFeatures:
         return 0
 
     def save_data(self, output_folder):
+        # 1. Prepare clinical features
         self.data_type_stabilization()
         self.create_clinical_interactions()
         self.apply_medical_thresholds()
         self.extract_us_signals()
         self.apply_categorical_encoding()
         self.remove_leakage_features()
-        self.align_feature_groups()
         self.merge_image_registry()
+        self.align_feature_groups()
 
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
@@ -320,6 +322,5 @@ class HandleFeatures:
 
         with open(feature_groups_path, "w") as f:
             json.dump(self.feature_groups, f, indent=4)
-
 
         return 0
