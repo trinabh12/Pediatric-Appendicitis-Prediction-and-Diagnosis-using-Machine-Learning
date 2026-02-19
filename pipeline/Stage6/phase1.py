@@ -16,7 +16,14 @@ import joblib
 from safetensors.tensorflow import save_file
 
 
+# ------------------------------------------------------------------
+# 🧠 Model Architecture (Optimized)
+# ------------------------------------------------------------------
 def build_clinical_mlp(input_dim):
+    """
+    Optimized architecture matching your notebook:
+    Dense(L2) -> BatchNorm -> Dropout -> Dense(L2) -> BatchNorm -> Output
+    """
     inputs = Input(shape=(input_dim,), name="tabular_input")
 
     # First Block
@@ -44,7 +51,9 @@ def build_clinical_mlp(input_dim):
     return model
 
 
-
+# ------------------------------------------------------------------
+# ⚙️ Phase 1 Manager
+# ------------------------------------------------------------------
 class Phase1:
     def __init__(self, prev_stage, data_dir, train_file, val_file, test_file, feature_groups_file, seed, threshold):
         self.tabular_path = os.path.join(prev_stage, data_dir, "tabular")

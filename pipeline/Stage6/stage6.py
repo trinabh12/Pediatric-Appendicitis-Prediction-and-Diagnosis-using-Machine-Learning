@@ -3,7 +3,7 @@ from phase1 import Phase1
 # Config
 PREV_STAGE = "../Stage5"
 DATA_DIR = "training dataset"
-OUTPUT_ROOT = "models/phase1"
+OUTPUT_ROOT = "phase1-results"
 
 # Extracted from notebook analysis for best performance
 SEED = 0
