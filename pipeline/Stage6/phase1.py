@@ -9,124 +9,178 @@ from tensorflow.keras.layers import Dense, Dropout, Input
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, roc_auc_score, classification_report
-from safetensors.tensorflow import save_file
 import joblib
 
 
 class Phase1:
-    def __init__(self, prev_stage, data_path, train, val, test, feature_report, seed=0):
+    """
+    Phase 1: Tabular Clinical Model
+    Goal: Predict Diagnosis & produce Clinical Embeddings for fusion.
+    """
+
+    def __init__(self, data_dir, train_file, val_file, test_file,
+                 feature_groups_file, seed=0, threshold=0.614):
+
         self.seed = seed
+        self.threshold = threshold
         self._set_seed()
 
-        data_dir = os.path.join(prev_stage, data_path)
+        # Load feature groups
+        with open(os.path.join(data_dir, feature_groups_file), 'r', encoding='utf-8') as f:
+            self.feature_groups = json.load(f)
 
-        # Fix encoding error with explicit utf-8
-        with open(os.path.join(data_dir, feature_report), 'r', encoding='utf-8') as f:
-            self.features = json.load(f)
+        # Load splits
+        self.train_df = pd.read_csv(os.path.join(data_dir, train_file))
+        self.val_df = pd.read_csv(os.path.join(data_dir, val_file))
+        self.test_df = pd.read_csv(os.path.join(data_dir, test_file))
 
-        self.train = pd.read_csv(os.path.join(data_dir, train), encoding='utf-8')
-        self.val = pd.read_csv(os.path.join(data_dir, val), encoding='utf-8')
-        self.test = pd.read_csv(os.path.join(data_dir, test), encoding='utf-8')
+        self.target = "Diagnosis"
 
+    # ------------------------------------------------------------------
+    # 🔒 Reproducibility
+    # ------------------------------------------------------------------
     def _set_seed(self):
-        os.environ['PYTHONHASHSEED'] = str(self.seed)
+        os.environ["PYTHONHASHSEED"] = str(self.seed)
         random.seed(self.seed)
         np.random.seed(self.seed)
         tf.random.set_seed(self.seed)
 
-    def get_features(self, part=1):
-        """Selects features based on Part 1 (Clinical) or Part 2 (Labs added)."""
+    # ------------------------------------------------------------------
+    # 📊 Feature Selection (Final Phase 1 design)
+    # ------------------------------------------------------------------
+    def get_phase1_features(self):
         feature_list = (
-                self.features.get("Clinical", []) +
-                self.features.get("Demographic / Other", []) +
-                self.features.get("Scoring", []) +
-                self.features.get("clinical_derived", []))
+            self.feature_groups["Clinical"] +
+            self.feature_groups["Laboratory"] +
+            self.feature_groups["Demographic / Other"] +
+            self.feature_groups["Scoring"] +
+            self.feature_groups["clinical_derived"] +
+            self.feature_groups["lab_derived"]
+        )
 
-        if part == 2:
-            feature_list += (self.features.get("Laboratory", []) +
-                             self.features.get("lab_derived", []))
+        available = [f for f in feature_list if f in self.train_df.columns]
+        return available
 
-        available_features = [f for f in feature_list if f in self.train.columns]
-        return available_features
-
-    def prepare_data(self, part=1):
-        target = "Diagnosis"
-        feats = self.get_features(part)
+    # ------------------------------------------------------------------
+    # 🧹 Data Preparation
+    # ------------------------------------------------------------------
+    def prepare_data(self):
+        features = self.get_phase1_features()
 
         scaler = StandardScaler()
-        # Scale only based on Training data to prevent data leakage
-        x_train = scaler.fit_transform(self.train[feats])
-        y_train = self.train[target]
 
-        x_val = scaler.transform(self.val[feats])
-        y_val = self.val[target]
+        X_train = scaler.fit_transform(self.train_df[features])
+        y_train = self.train_df[self.target]
 
-        x_test = scaler.transform(self.test[feats])
-        y_test = self.test[target]
+        X_val = scaler.transform(self.val_df[features])
+        y_val = self.val_df[self.target]
 
-        return x_train, x_val, x_test, y_train, y_val, y_test, feats, scaler
+        X_test = scaler.transform(self.test_df[features])
+        y_test = self.test_df[self.target]
 
-    def define_MLP(self, input_dim):
-        """Your tested architecture: 32 -> 16 (Embedding) -> 1 (Output)."""
+        return X_train, X_val, X_test, y_train, y_val, y_test, features, scaler
+
+    # ------------------------------------------------------------------
+    # 🧠 Final Small MLP Architecture (validated)
+    # ------------------------------------------------------------------
+    def build_model(self, input_dim):
         model = Sequential([
             Input(shape=(input_dim,)),
-            Dense(32, activation='relu'),
+            Dense(32, activation="relu"),
             Dropout(0.3),
-            Dense(16, activation='relu', name="clinical_embedding"),
-            Dense(1, activation='sigmoid')
+            Dense(16, activation="relu", name="clinical_embedding"),
+            Dense(1, activation="sigmoid")
         ])
 
         model.compile(
-            optimizer='adam',
-            loss='binary_crossentropy',
-            metrics=['accuracy', tf.keras.metrics.AUC(name='auc')]
+            optimizer="adam",
+            loss="binary_crossentropy",
+            metrics=["accuracy", tf.keras.metrics.AUC(name="auc")]
         )
         return model
 
-    def save_as_safetensors(self, model, output_path):
-        """Saves weights in .safetensors format for cross-platform compatibility."""
-        tensors = {v.name: v.read_value() for v in model.weights}
-        save_file(tensors, output_path)
+    # ------------------------------------------------------------------
+    # 🧬 Embedding Extraction
+    # ------------------------------------------------------------------
+    def extract_embeddings(self, model, X):
+        embedding_model = Model(
+            inputs=model.input,
+            outputs=model.get_layer("clinical_embedding").output
+        )
+        return embedding_model.predict(X)
 
-    def extract_embeddings(self, model, x_data):
-        """Returns the 16-D vector from the clinical_embedding layer."""
-        embedding_model = Model(inputs=model.input, outputs=model.get_layer("clinical_embedding").output)
-        return embedding_model.predict(x_data)
+    # ------------------------------------------------------------------
+    # 💾 Save Artifacts
+    # ------------------------------------------------------------------
+    def save_assets(self, output_dir, model, scaler, features,
+                    embeddings, report):
 
-    def train_phase_part(self, part, threshold, output_dir):
         os.makedirs(output_dir, exist_ok=True)
-        part_name = f"phase1_part{part}"
 
-        # 1. Prepare Data
-        x_train, x_val, x_test, y_train, y_val, y_test, feats, scaler = self.prepare_data(part)
+        # Model
+        model.save(os.path.join(output_dir, "phase1_model.h5"))
 
-        # 2. Train
-        model = self.define_MLP(len(feats))
-        early_stop = EarlyStopping(monitor='val_auc', patience=10, mode='max', restore_best_weights=True)
+        # Scaler
+        joblib.dump(scaler, os.path.join(output_dir, "phase1_scaler.pkl"))
 
-        model.fit(x_train, y_train, validation_data=(x_val, y_val),
-                  epochs=100, batch_size=16, callbacks=[early_stop], verbose=0)
+        # Features used
+        with open(os.path.join(output_dir, "phase1_features.json"), "w") as f:
+            json.dump(features, f, indent=4)
 
-        # 3. Predict & Report using experimental threshold
-        probs = model.predict(x_test).ravel()
-        preds = (probs >= threshold).astype(int)
+        # Embeddings
+        for split, emb in embeddings.items():
+            np.save(os.path.join(output_dir, f"{split}_clinical_embeddings.npy"), emb)
 
-        report = classification_report(y_test, preds, output_dict=True)
-        report['auc'] = roc_auc_score(y_test, probs)
-        report['threshold'] = threshold
-
-        # 4. Save Assets
-        model.save(os.path.join(output_dir, f"{part_name}_model.h5"))
-        self.save_as_safetensors(model, os.path.join(output_dir, f"{part_name}_model.safetensors"))
-        joblib.dump(scaler, os.path.join(output_dir, f"{part_name}_scaler.pkl"))
-
-        # Save Embeddings
-        embeddings = {"train": x_train, "val": x_val, "test": x_test}
-        for split_name, x_data in embeddings.items():
-            emb = self.extract_embeddings(model, x_data)
-            np.save(os.path.join(output_dir, f"{part_name}_{split_name}_embeddings.npy"), emb)
-
-        with open(os.path.join(output_dir, f"{part_name}_report.json"), 'w', encoding='utf-8') as f:
+        # Report
+        with open(os.path.join(output_dir, "phase1_report.json"), "w") as f:
             json.dump(report, f, indent=4)
+
+    # ------------------------------------------------------------------
+    # 🚀 Train + Evaluate + Save
+    # ------------------------------------------------------------------
+    def run(self, output_dir="phase1_output"):
+        # 1️⃣ Prepare Data
+        X_train, X_val, X_test, y_train, y_val, y_test, features, scaler = self.prepare_data()
+
+        # 2️⃣ Build Model
+        model = self.build_model(len(features))
+
+        # 3️⃣ Train
+        early_stop = EarlyStopping(
+            monitor="val_auc",
+            patience=10,
+            mode="max",
+            restore_best_weights=True
+        )
+
+        model.fit(
+            X_train, y_train,
+            validation_data=(X_val, y_val),
+            epochs=100,
+            batch_size=16,
+            callbacks=[early_stop],
+            verbose=1
+        )
+
+        # 4️⃣ Predictions
+        probs = model.predict(X_test).ravel()
+        preds = (probs >= self.threshold).astype(int)
+
+        # 5️⃣ Metrics
+        report = classification_report(y_test, preds, output_dict=True)
+        report["auc"] = float(roc_auc_score(y_test, probs))
+        report["accuracy"] = float(accuracy_score(y_test, preds))
+        report["threshold"] = self.threshold
+        report["seed"] = self.seed
+
+        # 6️⃣ Embeddings for Fusion
+        embeddings = {
+            "train": self.extract_embeddings(model, X_train),
+            "val": self.extract_embeddings(model, X_val),
+            "test": self.extract_embeddings(model, X_test)
+        }
+
+        # 7️⃣ Save Everything
+        self.save_assets(output_dir, model, scaler, features, embeddings, report)
 
         return report
