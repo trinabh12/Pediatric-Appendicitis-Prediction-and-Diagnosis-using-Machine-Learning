@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appendicitis CDSS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800">
+
+    <div class="max-w-5xl mx-auto py-10 px-4">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-bold text-blue-900 mb-2">🩺 Pediatric Appendicitis CDSS</h1>
+            <p class="text-gray-500">AI-Powered Clinical Decision Support System</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">1. Patient Data</h2>
+
+                <label class="block text-sm font-medium text-gray-600 mb-2">Patient Vitals & Labs (JSON format)</label>
+                <textarea id="tabularData" class="w-full h-48 p-3 border rounded focus:ring-2 focus:ring-blue-400 focus:outline-none font-mono text-sm bg-gray-50 mb-6" placeholder='{"Age": 10.5, "WBC_Count": 14.5...}'></textarea>
+
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">2. Ultrasound Image</h2>
+                <input type="file" id="imageFile" accept=".bmp,.jpg,.png" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 mb-6"/>
+
+                <button id="analyzeBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition duration-200 shadow-lg">
+                    🚀 Analyze Patient
+                </button>
+                <p id="statusMsg" class="text-sm text-center mt-3 text-gray-500 hidden">Processing...</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 flex flex-col">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">📊 Diagnostic Report</h2>
+
+                <div id="resultsArea" class="hidden flex-grow flex-col">
+                    <div class="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-100 text-center">
+                        <p class="text-sm font-semibold text-blue-800 uppercase tracking-wide">Appendicitis Probability</p>
+                        <p id="primaryProb" class="text-5xl font-extrabold text-blue-900 my-2">--%</p>
+                        <span id="riskBadge" class="inline-block px-3 py-1 text-xs font-bold rounded-full">RISK LEVEL</span>
+                    </div>
+
+                    <h3 class="font-semibold text-gray-700 mb-3 text-sm uppercase">Secondary Ultrasound Findings</h3>
+                    <div id="secondaryFindings" class="space-y-4">
+                        </div>
+                </div>
+
+                <div id="placeholderArea" class="flex-grow flex items-center justify-center text-gray-400 text-sm text-center">
+                    Upload data and click Analyze to generate the clinical report.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('analyzeBtn').addEventListener('click', async () => {
+            const jsonInput = document.getElementById('tabularData').value;
+            const fileInput = document.getElementById('imageFile');
+            const statusMsg = document.getElementById('statusMsg');
+            const resultsArea = document.getElementById('resultsArea');
+            const placeholderArea = document.getElementById('placeholderArea');
+
+            if (!jsonInput || fileInput.files.length === 0) {
+                alert("Please provide both the JSON data and an ultrasound image.");
+                return;
+            }
+
+            statusMsg.classList.remove('hidden');
+            statusMsg.textContent = "Analyzing data through AI Fusion Network...";
+
+            // Prepare the form data to send to FastAPI
+            const formData = new FormData();
+            formData.append("tabular_data", jsonInput);
+            formData.append("image", fileInput.files[0]);
+
+            try {
+                // Since FastAPI will serve this file, we can just call /predict directly!
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const report = data.patient_report;
+
+                    // Update Primary Metric
+                    document.getElementById('primaryProb').textContent = report.Appendicitis_Probability + "%";
+
+                    const badge = document.getElementById('riskBadge');
+                    badge.textContent = report.Risk_Level + " RISK";
+                    badge.className = report.Risk_Level === "HIGH"
+                        ? "inline-block px-3 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800"
+                        : "inline-block px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800";
+
+                    // Update Secondary Metrics
+                    const secondaryDiv = document.getElementById('secondaryFindings');
+                    secondaryDiv.innerHTML = ""; // Clear old results
+
+                    for (const [finding, prob] of Object.entries(report.Secondary_Findings)) {
+                        const cleanName = finding.replace(/_/g, ' ');
+                        const barHtml = `
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="font-medium text-gray-700">${cleanName}</span>
+                                    <span class="text-gray-500">${prob}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full transition-all duration-1000" style="width: ${prob}%"></div>
+                                </div>
+                            </div>
+                        `;
+                        secondaryDiv.innerHTML += barHtml;
+                    }
+
+                    // Show Results, Hide Placeholder
+                    placeholderArea.classList.add('hidden');
+                    resultsArea.classList.remove('hidden');
+                    resultsArea.classList.add('flex');
+                    statusMsg.textContent = "Analysis Complete!";
+                    setTimeout(() => statusMsg.classList.add('hidden'), 3000);
+
+                } else {
+                    alert("API Error: " + (data.detail || "Unknown error"));
+                    statusMsg.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                alert("Could not connect to the server.");
+                statusMsg.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

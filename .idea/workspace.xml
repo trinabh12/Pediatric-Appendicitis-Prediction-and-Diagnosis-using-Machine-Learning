@@ -2,10 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4702e80d-c78f-419b-b915-904b5e68b085" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/api/inference.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/model_manager.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/flask_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/server.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/static/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/static/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/templates/index.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +22,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -32,6 +39,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python.main.executor": "Run",
     "Python.phase1.executor": "Run",
@@ -67,7 +75,7 @@
       <workItem from="1771481038792" duration="561000" />
       <workItem from="1771481639679" duration="4478000" />
       <workItem from="1771488632782" duration="1110000" />
-      <workItem from="1771490317124" duration="20544000" />
+      <workItem from="1771490317124" duration="22501000" />
     </task>
     <servers />
   </component>
@@ -77,7 +85,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$phase1.coverage" NAME="phase1 Coverage Results" MODIFIED="1771494797807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$phase2.coverage" NAME="phase2 Coverage Results" MODIFIED="1771567443950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
-    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$main.coverage" NAME="main Coverage Results" MODIFIED="1771578433876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
+    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$main.coverage" NAME="main Coverage Results" MODIFIED="1771580373002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage6.coverage" NAME="stage6 Coverage Results" MODIFIED="1771570174173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
   </component>
 </project>
