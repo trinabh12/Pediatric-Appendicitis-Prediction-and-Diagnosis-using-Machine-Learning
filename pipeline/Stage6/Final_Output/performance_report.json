@@ -1,0 +1,50 @@
+{
+    "model_type": "Multi-Task Fusion Network",
+    "train_metrics": {
+        "auc": 0.9388374521406194,
+        "accuracy": 0.8589743589743589
+    },
+    "val_metrics": {
+        "auc": 0.8179347826086957,
+        "accuracy": 0.7435897435897436
+    },
+    "test_metrics": {
+        "auc": 0.8059475806451613,
+        "accuracy": 0.7133757961783439,
+        "classification_report": {
+            "0": {
+                "precision": 0.7021276595744681,
+                "recall": 0.515625,
+                "f1-score": 0.5945945945945946,
+                "support": 64.0
+            },
+            "1": {
+                "precision": 0.7181818181818181,
+                "recall": 0.8494623655913979,
+                "f1-score": 0.7783251231527094,
+                "support": 93.0
+            },
+            "accuracy": 0.7133757961783439,
+            "macro avg": {
+                "precision": 0.7101547388781431,
+                "recall": 0.682543682795699,
+                "f1-score": 0.686459858873652,
+                "support": 157.0
+            },
+            "weighted avg": {
+                "precision": 0.7116374477941085,
+                "recall": 0.7133757961783439,
+                "f1-score": 0.7034286019570447,
+                "support": 157.0
+            }
+        }
+    },
+    "secondary_targets_predicted": [
+        "Free_Fluids",
+        "Target_Sign",
+        "Bowel_Wall_Thickening",
+        "Pathological_Lymph_Nodes",
+        "Appendicolith",
+        "Perforation"
+    ]
+}

@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4702e80d-c78f-419b-b915-904b5e68b085" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pipeline/Stage6/phase2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pipeline/Stage6/phase3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_1/model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_1/model.keras" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_2/model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_2/model.keras" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pipeline/Stage6/phase2-results/model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/phase2-results/model.keras" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pipeline/Stage6/stage6.py" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/stage6.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,7 +68,7 @@
       <workItem from="1771481038792" duration="561000" />
       <workItem from="1771481639679" duration="4478000" />
       <workItem from="1771488632782" duration="1110000" />
-      <workItem from="1771490317124" duration="13218000" />
+      <workItem from="1771490317124" duration="14732000" />
     </task>
     <servers />
   </component>
@@ -77,6 +78,6 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$phase1.coverage" NAME="phase1 Coverage Results" MODIFIED="1771494797807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$phase2.coverage" NAME="phase2 Coverage Results" MODIFIED="1771567443950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
-    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage6.coverage" NAME="stage6 Coverage Results" MODIFIED="1771567718871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
+    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage6.coverage" NAME="stage6 Coverage Results" MODIFIED="1771570174173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
   </component>
 </project>
