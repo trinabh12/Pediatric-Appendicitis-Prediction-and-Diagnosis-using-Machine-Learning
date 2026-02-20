@@ -33,4 +33,4 @@ def copy_pipeline_models(pipeline_dir, local_dir):
         print(f"   -> Copying {filename}...")
         shutil.copy2(src_path, dst_path)
 
-    print("✅ Successfully copied all models to the local API folder.")
+    print("Successfully copied all models to the local API folder.")
