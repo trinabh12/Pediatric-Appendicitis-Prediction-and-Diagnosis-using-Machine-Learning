@@ -1,10 +1,10 @@
-<h2>Pipeline Overview</h2>
+<h3>Pipeline Overview</h3>
 <p>
 This project implements a full-stack data engineering and machine learning pipeline for Pediatric Appendicitis Prediction using multimodal data, including clinical records, laboratory results, and ultrasound imaging.</p>
 <p>
 The system is designed to be reproducible, versioned, and scalable, combining data ingestion, validation, feature engineering, lineage tracking, and multimodal model training into a unified workflow.</p>
 
-**Stage 1 — Data Ingestion**
+<h4>Stage 1 — Data Ingestion</h4>
 
 The ingestion stage is responsible for acquiring raw data and organizing it into a structured format suitable for downstream processing. During this stage, dataset assets are downloaded from the source and metadata is extracted to understand schema, feature descriptions, and data types.
 
@@ -16,13 +16,13 @@ tabular/ containing clinical and laboratory records
 
 This separation ensures modular processing of multimodal data while preserving traceability.
 
-**Stage 2 — Data Validation and Profiling**
+<h4>Stage 2 — Data Validation and Profiling</h4>
 
 This stage ensures dataset integrity and establishes a data quality baseline before transformations are applied. Missing values are analyzed across all features and a missingness report is generated to guide imputation strategies.
 
 Observed data is validated against metadata specifications to detect inconsistencies such as invalid categories, unexpected ranges, or schema mismatches. This prevents downstream failures and ensures feature assumptions remain valid.
 
-**Stage 3 — Data Preparation**
+<h4>Stage 3 — Data Preparation</h4>
 
 The preparation stage cleans and structures the dataset for feature engineering and model training. Features are categorized based on value type, dependency relationships, and linkage to image assets.
 
