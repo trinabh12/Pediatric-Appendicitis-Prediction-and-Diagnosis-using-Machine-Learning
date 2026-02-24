@@ -1,8 +1,8 @@
-**Pipeline Overview**
-
-This project implements a full-stack data engineering and machine learning pipeline for Pediatric Appendicitis Prediction using multimodal data, including clinical records, laboratory results, and ultrasound imaging.
-
-The system is designed to be reproducible, versioned, and scalable, combining data ingestion, validation, feature engineering, lineage tracking, and multimodal model training into a unified workflow.
+<h2>Pipeline Overview</h2>
+<p>
+This project implements a full-stack data engineering and machine learning pipeline for Pediatric Appendicitis Prediction using multimodal data, including clinical records, laboratory results, and ultrasound imaging.</p>
+<p>
+The system is designed to be reproducible, versioned, and scalable, combining data ingestion, validation, feature engineering, lineage tracking, and multimodal model training into a unified workflow.</p>
 
 **Stage 1 — Data Ingestion**
 
