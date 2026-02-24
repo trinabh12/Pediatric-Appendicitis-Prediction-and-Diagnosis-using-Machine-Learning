@@ -32,7 +32,7 @@ Logical dependencies are handled by distinguishing primary and secondary relatio
 
 For image data, ultrasound scans are parsed using their naming convention (<subject_id>.<view_id>.bmp). Images are grouped by view ID and an image registry is created, linking each subject to scan paths and sequence counts. This registry enables multimodal fusion in later stages.
 
-**Stage 4 — Feature Engineering**
+<h4>Stage 4 — Feature Engineering</h4>
 
 This stage focuses on deriving high-signal features from clinical, laboratory, and ultrasound data to improve predictive performance.
 
@@ -52,7 +52,7 @@ Secondary findings scores aggregating ultrasound indicators
 
 Image path features are generated from the image registry, linking each subject to view-specific scans. Categorical features are one-hot encoded and binary features are standardized to 0/1 to ensure compatibility with machine learning models.
 
-**Stage 5 — Data Versioning and Lineage**
+<h4>Stage 5 — Data Versioning and Lineage</h4>
 
 This stage introduces reproducibility and governance into the pipeline. A hash function is used to lock the processed dataset version, ensuring experiments can be traced back to a specific data state.
 
@@ -60,7 +60,7 @@ Lineage metadata records transformation steps and dataset provenance. The datase
 
 This stage enables reliable experimentation and supports auditability in research or production environments.
 
-**Stage 6 — Model Training and Evaluation**
+<h4>Stage 6 — Model Training and Evaluation</h4>
 
 The final stage trains and evaluates models using a multimodal approach. The workflow is divided into three phases to handle tabular and image data separately before combining them.
 
