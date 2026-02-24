@@ -85,15 +85,17 @@ Accuracy can be misleading in medical datasets where class imbalance is common. 
 The Area Under the ROC Curve (AUC) is used because it measures the model’s ability to distinguish between classes across all decision thresholds. AUC is threshold-independent, robust to imbalance, and better reflects diagnostic performance in clinical settings.
 
 **Model Performance**
-*Phase1: Tabular MLP*
-Train AUC: 84.33%
-Val AUC: 76.08%
-Test AUC: 77.99%
-*Phase2: CNN*
-Train AUC: 82.79%
-Val AUC: 68.11%
-Test AUC: 66.85%
-***Phase3: Fusion Model***
-Train AUC: 93.88%
-Val AUC: 81.79%
-Test AUC: 80.59%
+*Phase1: Tabular MLP*<br>
+Train AUC: 84.33% <br>
+Val AUC: 76.08% <br>
+Test AUC: 77.99% <br>
+
+*Phase2: CNN*<br>
+Train AUC: 82.79%<br>
+Val AUC: 68.11%<br>
+Test AUC: 66.85%<br>
+
+***Phase3: Fusion Model***<br>
+Train AUC: 93.88%<br>
+Val AUC: 81.79%<br>
+Test AUC: 80.59%<br>
