@@ -1,5 +1,6 @@
 import os
 import cv2
+import json
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -11,9 +12,6 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from safetensors.tensorflow import save_file
 
 
-# ------------------------------------------------------------------
-# 🧠 Model Architecture
-# ------------------------------------------------------------------
 def build_image_cnn(input_shape=(224, 224, 3)):
     base_model = MobileNetV2(input_shape=input_shape, include_top=False, weights='imagenet')
     base_model.trainable = False
@@ -24,7 +22,6 @@ def build_image_cnn(input_shape=(224, 224, 3)):
     x = BatchNormalization()(x)
     x = Dropout(0.3)(x)
 
-    # Image Brain Bottleneck (16-D)
     embedding_layer = Dense(16, activation="relu",
                             kernel_regularizer=regularizers.l2(0.001),
                             name="image_embedding")(x)
@@ -41,9 +38,6 @@ def build_image_cnn(input_shape=(224, 224, 3)):
     return model
 
 
-# ------------------------------------------------------------------
-# ⚙️ Phase 2 Manager
-# ------------------------------------------------------------------
 class Phase2:
     def __init__(self, prev_stage, data_dir, train_file, val_file, test_file, seed=0):
         self.base_path = os.path.join(prev_stage, data_dir)
@@ -79,10 +73,6 @@ class Phase2:
         return paths, labels
 
     def _smart_load_and_split(self, path):
-        """
-        Handles dual-screen ultrasounds and pads images to prevent aspect ratio squash.
-        Returns a LIST of processed images (1 or 2 images).
-        """
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         if img is None:
             return []
@@ -90,16 +80,14 @@ class Phase2:
         h, w = img.shape
         sub_images = []
 
-        # Detect dual-screen (if width is significantly larger than height)
         if w > 1.5 * h:
-            sub_images.append(img[:, :w // 2])  # Left half
-            sub_images.append(img[:, w // 2:])  # Right half
+            sub_images.append(img[:, :w // 2])
+            sub_images.append(img[:, w // 2:])
         else:
-            sub_images.append(img)  # Standard single image
+            sub_images.append(img)
 
         processed = []
         for sub in sub_images:
-            # Letterbox Padding to preserve circular anatomy
             sh, sw = sub.shape
             max_dim = max(sh, sw)
 
@@ -122,8 +110,7 @@ class Phase2:
             for p, l in zip(paths, labels):
                 imgs = self._smart_load_and_split(p)
                 for img in imgs:
-                    yield img, l  # Yields each split image individually!
-
+                    yield img, l
         ds = tf.data.Dataset.from_generator(
             generator,
             output_signature=(
@@ -136,7 +123,6 @@ class Phase2:
         return ds.batch(batch_size).prefetch(tf.data.AUTOTUNE)
 
     def generate_patient_embeddings(self, model, df):
-        """Averages embeddings across ALL images and sub-images for a patient."""
         emb_model = Model(inputs=model.input, outputs=model.get_layer("image_embedding").output)
         patient_embeddings = []
 
@@ -171,6 +157,7 @@ class Phase2:
         print("Preparing Image Datasets with Smart Split & Pad...")
         train_ds = self.get_dataset(self.train_df, batch_size=32, shuffle=True)
         val_ds = self.get_dataset(self.val_df, batch_size=32, shuffle=False)
+        test_ds = self.get_dataset(self.test_df, batch_size=32, shuffle=False)
 
         model = build_image_cnn()
 
@@ -181,9 +168,44 @@ class Phase2:
         model.fit(train_ds, validation_data=val_ds, epochs=20, callbacks=[early_stop, lr_scheduler])
 
         os.makedirs(output_dir, exist_ok=True)
+
+        print("\n--- Evaluating Phase 2 Performance ---")
+
+        eval_train_ds = self.get_dataset(self.train_df, batch_size=32, shuffle=False)
+
+        train_loss, train_acc, train_auc = model.evaluate(eval_train_ds, verbose=0)
+        val_loss, val_acc, val_auc = model.evaluate(val_ds, verbose=0)
+        test_loss, test_acc, test_auc = model.evaluate(test_ds, verbose=0)
+
+        print(f"TRAIN -> Accuracy: {train_acc:.4f} | AUC: {train_auc:.4f}")
+        print(f"VAL   -> Accuracy: {val_acc:.4f} | AUC: {val_auc:.4f}")
+        print(f"TEST  -> Accuracy: {test_acc:.4f} | AUC: {test_auc:.4f}")
+
+        metrics = {
+            "train": {
+                "accuracy": float(train_acc),
+                "auc": float(train_auc),
+                "loss": float(train_loss)
+            },
+            "validation": {
+                "accuracy": float(val_acc),
+                "auc": float(val_auc),
+                "loss": float(val_loss)
+            },
+            "test": {
+                "accuracy": float(test_acc),
+                "auc": float(test_auc),
+                "loss": float(test_loss)
+            }
+        }
+
+        with open(os.path.join(output_dir, "phase2_metrics.json"), "w") as f:
+            json.dump(metrics, f, indent=4)
+
         model.save(os.path.join(output_dir, "model.keras"))
         self.save_safetensors(model, os.path.join(output_dir, "model.safetensors"))
 
+        print("\nGenerating Patient Embeddings...")
         np.save(os.path.join(output_dir, "train_image_embeddings.npy"),
                 self.generate_patient_embeddings(model, self.train_df))
         np.save(os.path.join(output_dir, "val_image_embeddings.npy"),
@@ -191,4 +213,4 @@ class Phase2:
         np.save(os.path.join(output_dir, "test_image_embeddings.npy"),
                 self.generate_patient_embeddings(model, self.test_df))
 
-        print(f"Phase 2 Assets saved to {output_dir}")
+        print(f"\nPhase 2 Assets saved successfully to: {output_dir}")
