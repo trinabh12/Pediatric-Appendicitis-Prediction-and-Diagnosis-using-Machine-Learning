@@ -1,10 +1,10 @@
-**Pipeline Overview**
+<h3>Pipeline Overview</h3>
+<p>
+This project implements a full-stack data engineering and machine learning pipeline for Pediatric Appendicitis Prediction using multimodal data, including clinical records, laboratory results, and ultrasound imaging.</p>
+<p>
+The system is designed to be reproducible, versioned, and scalable, combining data ingestion, validation, feature engineering, lineage tracking, and multimodal model training into a unified workflow.</p>
 
-This project implements a full-stack data engineering and machine learning pipeline for Pediatric Appendicitis Prediction using multimodal data, including clinical records, laboratory results, and ultrasound imaging.
-
-The system is designed to be reproducible, versioned, and scalable, combining data ingestion, validation, feature engineering, lineage tracking, and multimodal model training into a unified workflow.
-
-**Stage 1 — Data Ingestion**
+<h4>Stage 1 — Data Ingestion</h4>
 
 The ingestion stage is responsible for acquiring raw data and organizing it into a structured format suitable for downstream processing. During this stage, dataset assets are downloaded from the source and metadata is extracted to understand schema, feature descriptions, and data types.
 
@@ -16,13 +16,13 @@ tabular/ containing clinical and laboratory records
 
 This separation ensures modular processing of multimodal data while preserving traceability.
 
-**Stage 2 — Data Validation and Profiling**
+<h4>Stage 2 — Data Validation and Profiling</h4>
 
 This stage ensures dataset integrity and establishes a data quality baseline before transformations are applied. Missing values are analyzed across all features and a missingness report is generated to guide imputation strategies.
 
 Observed data is validated against metadata specifications to detect inconsistencies such as invalid categories, unexpected ranges, or schema mismatches. This prevents downstream failures and ensures feature assumptions remain valid.
 
-**Stage 3 — Data Preparation**
+<h4>Stage 3 — Data Preparation</h4>
 
 The preparation stage cleans and structures the dataset for feature engineering and model training. Features are categorized based on value type, dependency relationships, and linkage to image assets.
 
@@ -32,7 +32,7 @@ Logical dependencies are handled by distinguishing primary and secondary relatio
 
 For image data, ultrasound scans are parsed using their naming convention (<subject_id>.<view_id>.bmp). Images are grouped by view ID and an image registry is created, linking each subject to scan paths and sequence counts. This registry enables multimodal fusion in later stages.
 
-**Stage 4 — Feature Engineering**
+<h4>Stage 4 — Feature Engineering</h4>
 
 This stage focuses on deriving high-signal features from clinical, laboratory, and ultrasound data to improve predictive performance.
 
@@ -52,7 +52,7 @@ Secondary findings scores aggregating ultrasound indicators
 
 Image path features are generated from the image registry, linking each subject to view-specific scans. Categorical features are one-hot encoded and binary features are standardized to 0/1 to ensure compatibility with machine learning models.
 
-**Stage 5 — Data Versioning and Lineage**
+<h4>Stage 5 — Data Versioning and Lineage</h4>
 
 This stage introduces reproducibility and governance into the pipeline. A hash function is used to lock the processed dataset version, ensuring experiments can be traced back to a specific data state.
 
@@ -60,7 +60,7 @@ Lineage metadata records transformation steps and dataset provenance. The datase
 
 This stage enables reliable experimentation and supports auditability in research or production environments.
 
-**Stage 6 — Model Training and Evaluation**
+<h4>Stage 6 — Model Training and Evaluation</h4>
 
 The final stage trains and evaluates models using a multimodal approach. The workflow is divided into three phases to handle tabular and image data separately before combining them.
 
@@ -84,8 +84,19 @@ Accuracy can be misleading in medical datasets where class imbalance is common. 
 
 The Area Under the ROC Curve (AUC) is used because it measures the model’s ability to distinguish between classes across all decision thresholds. AUC is threshold-independent, robust to imbalance, and better reflects diagnostic performance in clinical settings.
 
-**Model Performance**
-Model	AUC
-Tabular MLP	___
-CNN	___
-Fusion Model	___
+**Model Performance**<br>
+*Phase1: Tabular MLP*<br>
+Train AUC: 84.33% <br>
+Val AUC: 76.08% <br>
+Test AUC: 77.99% <br>
+
+*Phase2: CNN*<br>
+Train AUC: 82.79%<br>
+Val AUC: 68.11%<br>
+Test AUC: 66.85%<br>
+
+***Phase3: Fusion Model***<br>
+Train AUC: 93.88%<br>
+Val AUC: 81.79%<br>
+Test AUC: 80.59%<br>
+*(final result)*
