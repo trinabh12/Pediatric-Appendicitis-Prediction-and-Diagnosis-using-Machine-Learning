@@ -6,7 +6,7 @@ ROOT_DIR = "../"
 DATASET_DIR = "Regensburg Pediatric Appendicitis Dataset"
 FILE_NAME = "app_data.xlsx"
 IMAGE_DIR = "US_Pictures"
-TARGET_FOLDER = "ingestion_data"
+TARGET_FOLDER = "ingestion data"
 
 OUTPUT_TABULAR = os.path.join(TARGET_FOLDER, "tabular")
 OUTPUT_IMAGE = os.path.join(TARGET_FOLDER, "image")

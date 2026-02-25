@@ -5,7 +5,7 @@ from image_processor import ImageProcessor
 
 # Path Configurations
 PREV_STAGE = "../Stage2"
-DATASET_DIR = "validation_and_profiling_data"
+DATASET_DIR = "validation and profiling data"
 
 # Input paths (from Stage 2 output)
 TABULAR_INPUT = os.path.join(DATASET_DIR, "tabular")

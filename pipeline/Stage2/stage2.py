@@ -3,7 +3,7 @@ from validate_data import ValidationAndProfiling
 
 # Path Configurations
 PREV_STAGE = "../Stage1"
-DATASET_DIR = "ingestion_data"
+DATASET_DIR = "ingestion data"
 
 # Input paths (from Stage 1 output)
 TABULAR_INPUT = os.path.join(DATASET_DIR, "tabular")
@@ -14,7 +14,7 @@ DATA_GROUPED = "feature_grouped.json"
 IMAGE_INPUT = os.path.join(DATASET_DIR, "image")
 
 # Output paths for Stage 2
-TARGET_FOLDER = "validation_and_profiling_data"
+TARGET_FOLDER = "validation and profiling data"
 OUTPUT_TABULAR = os.path.join(TARGET_FOLDER, "tabular")
 OUTPUT_IMAGE = os.path.join(TARGET_FOLDER, "image")
 
