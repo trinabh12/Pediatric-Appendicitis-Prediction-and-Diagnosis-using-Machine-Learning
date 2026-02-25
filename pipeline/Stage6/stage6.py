@@ -4,7 +4,6 @@ from phase1 import Phase1
 from phase2 import Phase2
 from phase3 import Phase3
 
-# Config
 PREV_STAGE = "../Stage5"
 DATA_DIR = "training dataset"
 PHASE1_OUT = "phase1-results"

@@ -7,7 +7,6 @@
       <change beforePath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_1/model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_1/model.keras" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_2/model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/phase1-results/part_2/model.keras" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pipeline/Stage6/phase2-results/model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/phase2-results/model.keras" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pipeline/Stage6/phase2.py" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage6/phase2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,27 +32,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.main.executor": "Run",
-    "Python.phase1.executor": "Run",
-    "Python.phase2.executor": "Run",
-    "Python.stage6.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Trinabh Mitra/Documents/GitHub/Pediatric-Appendicitis-Prediction-and-Diagnosis-using-Machine-Learning",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.phase1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.phase2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.stage6.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Trinabh Mitra/Documents/GitHub/Pediatric-Appendicitis-Prediction-and-Diagnosis-using-Machine-Learning&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -75,7 +74,8 @@
       <workItem from="1771490317124" duration="30410000" />
       <workItem from="1771835058216" duration="4486000" />
       <workItem from="1771890035708" duration="1216000" />
-      <workItem from="1771920271787" duration="1970000" />
+      <workItem from="1771920271787" duration="5123000" />
+      <workItem from="1771941139378" duration="18000" />
     </task>
     <servers />
   </component>
@@ -86,6 +86,6 @@
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$phase1.coverage" NAME="phase1 Coverage Results" MODIFIED="1771494797807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$phase2.coverage" NAME="phase2 Coverage Results" MODIFIED="1771567443950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$main.coverage" NAME="main Coverage Results" MODIFIED="1771891378331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
-    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage6.coverage" NAME="stage6 Coverage Results" MODIFIED="1771921961201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
+    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage6.coverage" NAME="stage6 Coverage Results" MODIFIED="1771923790122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
   </component>
 </project>
