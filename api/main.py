@@ -23,16 +23,16 @@ async def lifespan(app: FastAPI):
     try:
         # Initialize the predictor with pipeline and local paths
         engine = AppendicitisPredictor(
-            pipeline_dir="../pipeline/Stage6",
-            local_dir="./models"
+            pipeline_dir=os.path.join("../", "pipeline", "data"),
+            local_dir="models"
         )
     except Exception as e:
-        print(f"❌ CRITICAL: Failed to initialize engine: {e}")
+        print(f"CRITICAL: Failed to initialize engine: {e}")
         traceback.print_exc()
 
     yield
 
-    print("\n🛑 SHUTTING DOWN API...")
+    print("\nSHUTTING DOWN API...")
     engine = None
 
 app = FastAPI(
@@ -50,9 +50,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ------------------------------------------------------------------
-# 🩺 API Endpoints
-# ------------------------------------------------------------------
+
 
 @app.post("/predict")
 async def predict_appendicitis(
@@ -95,18 +93,16 @@ async def health_check():
         "engine_ready": engine is not None
     }
 
-# ------------------------------------------------------------------
-# 🖥️ Frontend Serving
-# ------------------------------------------------------------------
+
 
 # Ensure UI directory exists before mounting
 ui_path = os.path.abspath("../ui")
 if os.path.exists(ui_path):
     # Mounting the static files at the root
     app.mount("/", StaticFiles(directory=ui_path, html=True), name="ui")
-    print(f"✅ UI mounted successfully from: {ui_path}")
+    print(f"UI mounted successfully from: {ui_path}")
 else:
-    print(f"⚠️ UI folder NOT FOUND at {ui_path}. Dashboard will be unavailable.")
+    print(f"UI folder NOT FOUND at {ui_path}. Dashboard will be unavailable.")
 
 if __name__ == "__main__":
     # Note: Use 'main:app' as string for reliable hot-reloading

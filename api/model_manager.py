@@ -3,11 +3,8 @@ import shutil
 
 
 def copy_pipeline_models(pipeline_dir, local_dir):
-    """
-    Physically copies the 6 necessary files from the pipeline's Stage 6
-    directories into the local API models directory.
-    """
-    print(f"🔄 Starting file transfer from {pipeline_dir} to {local_dir}...")
+
+    print(f"Starting file transfer from {pipeline_dir} to {local_dir}...")
     os.makedirs(local_dir, exist_ok=True)
 
     # Define the exact source paths based on Stage 6 output structure
@@ -28,7 +25,7 @@ def copy_pipeline_models(pipeline_dir, local_dir):
     for src_path, filename in artifact_mapping:
         dst_path = os.path.join(local_dir, filename)
         if not os.path.exists(src_path):
-            raise FileNotFoundError(f"❌ CRITICAL ERROR: Could not find {src_path} in pipeline!")
+            raise FileNotFoundError(f"CRITICAL ERROR: Could not find {src_path} in pipeline!")
 
         print(f"   -> Copying {filename}...")
         shutil.copy2(src_path, dst_path)

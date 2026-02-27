@@ -4,7 +4,8 @@ from data_preparation import DataPreparation
 from image_processor import ImageProcessor
 
 # Path Configurations
-PREV_STAGE = "../Stage2"
+ROOT_DIR = "../"
+PREV_STAGE = os.path.join(ROOT_DIR, "data")
 DATASET_DIR = "validation and profiling data"
 
 # Input paths (from Stage 2 output)
@@ -18,7 +19,7 @@ IMAGE_INPUT = os.path.join(DATASET_DIR, "image")
 IMAGE_REPORT = "image_validation_report.json"
 
 # Output paths for Stage 3
-OUTPUT_DIR = "prepared dataset"
+OUTPUT_DIR = os.path.join(ROOT_DIR, "data", "prepared dataset")
 OUTPUT_TAB_DIR = os.path.join(OUTPUT_DIR, "tabular")
 OUTPUT_IMG_DIR = os.path.join(OUTPUT_DIR, "image")
 

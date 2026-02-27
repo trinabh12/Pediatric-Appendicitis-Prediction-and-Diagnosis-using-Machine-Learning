@@ -3,7 +3,8 @@ import sys
 from feature_handling import HandleFeatures
 
 # Path Configurations
-PREV_STAGE = "../Stage3"
+ROOT_DIR = "../"
+PREV_STAGE = os.path.join(ROOT_DIR, "data")
 DATASET_DIR = "prepared dataset"
 
 # Input paths (from Stage 3 output)
@@ -17,7 +18,7 @@ IMAGE_INPUT = os.path.join(DATASET_DIR, "image")
 IMAGE_REGISTRY = os.path.join(PREV_STAGE, IMAGE_INPUT, "image_registry.json")
 
 # Output paths for Stage 4
-OUTPUT_DIR = "engineered features"
+OUTPUT_DIR = os.path.join(ROOT_DIR, "data", "engineered features")
 OUTPUT_TABULAR = os.path.join(OUTPUT_DIR, "tabular")
 # Note: We pass the root OUTPUT_DIR to transfer_image_data to manage its own 'image' subfolder
 OUTPUT_IMAGE_ROOT = os.path.join(OUTPUT_DIR, "image")

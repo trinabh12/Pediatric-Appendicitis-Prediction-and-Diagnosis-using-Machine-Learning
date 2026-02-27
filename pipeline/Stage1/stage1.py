@@ -2,11 +2,14 @@ import os
 from ingestion import IngestionStage
 from download_data import DataDownloader
 
+
 ROOT_DIR = "../"
+os.mkdirs(os.path.join(ROOT_DIR, "data"), exist_ok =True)
+
 DATASET_DIR = "Regensburg Pediatric Appendicitis Dataset"
 FILE_NAME = "app_data.xlsx"
 IMAGE_DIR = "US_Pictures"
-TARGET_FOLDER = "ingestion data"
+TARGET_FOLDER = os.path.join(ROOT_DIR, "data", "ingestion data")
 
 OUTPUT_TABULAR = os.path.join(TARGET_FOLDER, "tabular")
 OUTPUT_IMAGE = os.path.join(TARGET_FOLDER, "image")

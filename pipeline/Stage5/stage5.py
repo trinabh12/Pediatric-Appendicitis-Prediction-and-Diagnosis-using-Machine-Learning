@@ -4,7 +4,8 @@ import shutil
 from lineage_manager import LineageManager
 
 # Path Configurations
-PREV_STAGE = "../Stage4"
+ROOT_DIR = "../"
+PREV_STAGE = os.path.join(ROOT_DIR, "data")
 DATASET_DIR = "engineered features"
 
 TABULAR_SUB = os.path.join(DATASET_DIR, "tabular")
@@ -16,7 +17,7 @@ ENCODING_REPORT = "encoding_map.json"
 FEATURE_REPORT = "engineered_feature_groups.json"
 
 # Output Configuration
-TARGET_FOLDER = "training dataset"
+TARGET_FOLDER = os.path.join(ROOT_DIR, "data", "training dataset")
 
 
 def run_stage5():
