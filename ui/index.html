@@ -1,198 +1,248 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDSS Dashboard - Full Clinical Input</title>
-    <link href="tailwind.min.css" rel="stylesheet">
-    <style>
-        .dark body { background-color: #0f172a !important; color: #f3f4f6 !important; }
-        .dark h1 { color: #93c5fd !important; }
-        .dark h2 { color: #60a5fa !important; border-color: #334155 !important; }
-        .dark h3 { color: #9ca3af !important; border-color: #334155 !important; }
-        .dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
-        .dark input, .dark select { background-color: #334155 !important; color: #ffffff !important; border-color: #475569 !important; }
-        .dark label, .dark span { color: #d1d5db !important; }
-        .dark .bg-blue-50 { background-color: rgba(30, 58, 138, 0.25) !important; border-color: #1e40af !important; }
-        .dark #primaryProb { color: #bfdbfe !important; }
-    </style>
+    <title>Appendicitis CDSS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 min-h-screen text-gray-800 transition-colors duration-300">
+<body class="bg-gray-50 min-h-screen text-gray-800">
 
-    <div class="max-w-7xl mx-auto py-8 px-4">
-        <header class="mb-8 flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-extrabold text-blue-900 mb-1">Pediatric Appendicitis CDSS</h1>
-                <p class="text-gray-500 font-medium">Multi-Modal AI Fusion Engine</p>
-            </div>
-            <button id="themeToggle" class="p-3 rounded-full bg-white shadow-md border border-gray-200 focus:outline-none">
-                <span id="themeIcon">🌙</span>
-            </button>
+    <div class="max-w-6xl mx-auto py-10 px-4">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-bold text-blue-900 mb-2">Pediatric Appendicitis CDSS</h1>
+            <p class="text-gray-500">AI-Powered Clinical Decision Support System</p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">1. Patient Data</h2>
 
-            <div class="lg:col-span-3 space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <form id="clinicalForm" class="space-y-8">
+                <p class="text-sm text-gray-500 mb-4">Enter patient features individually. The app will format them as JSON automatically for the API.</p>
 
-                        <section>
-                            <h2 class="text-lg font-bold text-blue-800 mb-4 border-b pb-1">1. Demographics & Vitals</h2>
-                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                                <div><label class="text-xs font-bold text-gray-500">Age</label><input type="number" step="0.1" name="Age" value="11" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                                <div><label class="text-xs font-bold text-gray-500">Sex (M=1)</label><select name="Sex" class="w-full p-2 border rounded bg-gray-50 text-sm"><option value="1">1</option><option value="0">0</option></select></div>
-                                <div><label class="text-xs font-bold text-gray-500">Height (cm)</label><input type="number" step="0.1" name="Height" value="145" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                                <div><label class="text-xs font-bold text-gray-500">Weight (kg)</label><input type="number" step="0.1" name="Weight" value="40" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                                <div><label class="text-xs font-bold text-gray-500">Temp (°C)</label><input type="number" step="0.1" name="Body_Temperature" value="37.5" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                            </div>
-                        </section>
+                <h3 class="font-semibold text-gray-700 mb-3 text-sm uppercase">Numeric Features</h3>
+                <div id="featureGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"></div>
 
-                        <section>
-                            <h2 class="text-lg font-bold text-blue-800 mb-4 border-b pb-1">2. Laboratory Signals</h2>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                                <div><label class="text-xs font-bold text-gray-500">WBC Count</label><input type="number" step="0.1" name="WBC_Count" value="12.5" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                                <div><label class="text-xs font-bold text-gray-500">CRP</label><input type="number" step="0.1" name="CRP" value="15.0" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                                <div><label class="text-xs font-bold text-gray-500">Neutrophil %</label><input type="number" step="0.1" name="Neutrophil_Percentage" value="76" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                                <div><label class="text-xs font-bold text-gray-500">Hemoglobin</label><input type="number" step="0.1" name="Hemoglobin" value="13.2" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                            </div>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div><label class="text-xs font-bold text-gray-500">RBC Count</label><input type="number" step="0.1" name="RBC_Count" value="4.5" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                                <div><label class="text-xs font-bold text-gray-500">WBC in Urine</label>
-                                    <select id="wbcUrine" class="w-full p-2 border rounded bg-gray-50 text-sm">
-                                        <option value="no">None</option><option value="+">+</option><option value="++">++</option><option value="+++">+++</option>
-                                    </select>
-                                </div>
-                                <div><label class="text-xs font-bold text-gray-500">Ketones (Urine)</label>
-                                    <select id="ketonesUrine" class="w-full p-2 border rounded bg-gray-50 text-sm">
-                                        <option value="no">None</option><option value="+">+</option><option value="++">++</option><option value="+++">+++</option>
-                                    </select>
-                                </div>
-                                <div><label class="text-xs font-bold text-gray-500">PAS Score</label><input type="number" name="Paedriatic_Appendicitis_Score" value="5" class="w-full p-2 border rounded bg-gray-50 text-sm"></div>
-                            </div>
-                        </section>
+                <h3 class="font-semibold text-gray-700 mb-3 text-sm uppercase">Binary Features</h3>
+                <div id="binaryGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"></div>
 
-                        <section>
-                            <h2 class="text-lg font-bold text-blue-800 mb-4 border-b pb-1">3. Clinical & Physical Signs</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div class="space-y-3">
-                                    <div class="flex justify-between text-sm"><span>Migratory Pain</span><select name="Migratory_Pain" class="border rounded"><option value="1">Yes</option><option value="0">No</option></select></div>
-                                    <div class="flex justify-between text-sm"><span>Lower Right Pain</span><select name="Lower_Right_Abd_Pain" class="border rounded"><option value="1">Yes</option><option value="0">No</option></select></div>
-                                    <div class="flex justify-between text-sm"><span>Coughing Pain</span><select name="Coughing_Pain" class="border rounded"><option value="0">No</option><option value="1">Yes</option></select></div>
-                                </div>
-                                <div class="space-y-3">
-                                    <div class="flex justify-between text-sm"><span>Nausea</span><select name="Nausea" class="border rounded"><option value="1">Yes</option><option value="0">No</option></select></div>
-                                    <div class="flex justify-between text-sm"><span>Psoas Sign</span><select name="Psoas_Sign" class="border rounded"><option value="0">No</option><option value="1">Yes</option></select></div>
-                                    <div class="flex justify-between text-sm"><span>Dysuria</span><select name="Dysuria" class="border rounded"><option value="0">No</option><option value="1">Yes</option></select></div>
-                                </div>
-                                <div class="space-y-3">
-                                    <div class="flex justify-between text-sm"><span>Stool</span><select id="stoolSelect" class="border rounded"><option value="normal">Normal</option><option value="diarrhea">Diarrhea</option><option value="constipation">Constipation</option></select></div>
-                                    <div class="flex justify-between text-sm"><span>Peritonitis</span><select id="periSelect" class="border rounded"><option value="no">None</option><option value="local">Local</option><option value="generalized">General</option></select></div>
-                                    <div class="flex justify-between text-sm"><span>Rebound Tend.</span><select name="Contralateral_Rebound_Tenderness" class="border rounded"><option value="0">No</option><option value="1">Yes</option></select></div>
-                                </div>
-                            </div>
-                        </section>
-                    </form>
-                </div>
+                <h3 class="font-semibold text-gray-700 mb-3 text-sm uppercase">Categorical Features</h3>
+                <div id="categoricalGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"></div>
 
-                <div class="flex gap-4">
-                    <div class="flex-grow bg-white p-4 rounded-xl border border-gray-200">
-                        <input type="file" id="imageFile" accept=".bmp,.jpg,.png" class="w-full text-sm text-gray-500 file:bg-blue-50 file:text-blue-700 file:rounded-lg file:border-0 file:px-4 file:py-2"/>
-                    </div>
-                    <button id="analyzeBtn" class="bg-blue-600 hover:bg-blue-800 text-white font-bold px-8 rounded-xl shadow-lg transition transform hover:scale-105">⚡ ANALYZE</button>
-                </div>
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">2. Ultrasound Image</h2>
+                <input type="file" id="imageFile" accept=".bmp,.jpg,.jpeg,.png" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 mb-6"/>
+
+                <button id="analyzeBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition duration-200 shadow-lg">
+                    Analyze Patient
+                </button>
+                <p id="statusMsg" class="text-sm text-center mt-3 text-gray-500 hidden">Processing...</p>
             </div>
 
-            <div class="lg:col-span-1">
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 sticky top-4 min-h-[600px] flex flex-col">
-                    <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-1">📊 Results</h2>
-                    <div id="resultsArea" class="hidden flex-grow flex flex-col">
-                        <div class="bg-blue-50 p-6 rounded-2xl mb-6 text-center">
-                            <p id="primaryProb" class="text-5xl font-black text-blue-900 mb-2">--%</p>
-                            <span id="riskBadge" class="px-3 py-1 text-xs font-bold rounded-full">RISK</span>
-                        </div>
-                        <div id="secondaryFindings" class="space-y-4"></div>
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 flex flex-col">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">Diagnostic Report</h2>
+
+                <div id="resultsArea" class="hidden flex-grow flex-col">
+                    <div class="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-100 text-center">
+                        <p class="text-sm font-semibold text-blue-800 uppercase tracking-wide">Appendicitis Probability</p>
+                        <p id="primaryProb" class="text-5xl font-extrabold text-blue-900 my-2">--%</p>
+                        <span id="riskBadge" class="inline-block px-3 py-1 text-xs font-bold rounded-full">RISK LEVEL</span>
                     </div>
-                    <div id="placeholderArea" class="flex-grow flex items-center justify-center text-gray-400 text-center text-sm">Upload data to see report.</div>
-                    <p id="statusMsg" class="text-xs text-center mt-4 text-blue-500 font-bold hidden">Processing AI Fusion...</p>
+
+                    <h3 class="font-semibold text-gray-700 mb-3 text-sm uppercase">Secondary Ultrasound Findings</h3>
+                    <div id="secondaryFindings" class="space-y-4"></div>
+                </div>
+
+                <div id="placeholderArea" class="flex-grow flex items-center justify-center text-gray-400 text-sm text-center">
+                    Enter features and click Analyze to generate the clinical report.
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- THEME LOGIC ---
-        const themeToggle = document.getElementById('themeToggle');
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            document.getElementById('themeIcon').textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
-        });
+        const featureGrid = document.getElementById("featureGrid");
+        const binaryGrid = document.getElementById("binaryGrid");
+        const categoricalGrid = document.getElementById("categoricalGrid");
+        let numericFeatures = [];
+        let binaryFeatures = [];
+        let categoricalFeatures = [];
 
-        // --- PREDICTION LOGIC ---
-        document.getElementById('analyzeBtn').addEventListener('click', async () => {
-            const form = document.getElementById('clinicalForm');
-            const fileInput = document.getElementById('imageFile');
-            if (fileInput.files.length === 0) return alert("Upload Image!");
+        async function loadSchema() {
+            const response = await fetch("/feature-schema");
+            if (!response.ok) {
+                throw new Error("Could not load feature schema");
+            }
+            const data = await response.json();
+            numericFeatures = data.numeric_features || [];
+            binaryFeatures = data.binary_features || [];
+            categoricalFeatures = data.categorical_features || [];
+        }
 
-            document.getElementById('statusMsg').classList.remove('hidden');
+        function renderNumericFeatures() {
+            featureGrid.innerHTML = "";
+            for (const f of numericFeatures) {
+                const wrapper = document.createElement("div");
+                wrapper.innerHTML = `
+                    <label class="block text-sm font-medium text-gray-600 mb-1">${f.label}</label>
+                    <input id="f_${f.key}" type="number" step="${f.step || "0.1"}" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gray-50" />
+                `;
+                featureGrid.appendChild(wrapper);
+            }
+        }
 
-            // Collect all inputs
-            const rawData = {};
-            new FormData(form).forEach((v, k) => rawData[k] = parseFloat(v));
+        function renderBinaryFeatures() {
+            binaryGrid.innerHTML = "";
+            for (const f of binaryFeatures) {
+                const wrapper = document.createElement("div");
+                const optionsHtml = (f.encoding === "yes_no")
+                    ? `<option value="1">Yes</option><option value="0">No</option>`
+                    : (f.options || []).map(o => `<option value="${o.value}">${o.label}</option>`).join("");
 
-            // Map Stool
-            const stool = document.getElementById('stoolSelect').value;
-            rawData["Stool:normal"] = stool === 'normal' ? 1 : 0;
-            rawData["Stool:diarrhea"] = stool === 'diarrhea' ? 1 : 0;
-            rawData["Stool:constipation"] = stool === 'constipation' ? 1 : 0;
-            rawData["Stool:constipation, diarrhea"] = 0;
+                wrapper.innerHTML = `
+                    <label class="block text-sm font-medium text-gray-600 mb-1">${f.label} (Binary)</label>
+                    <select id="f_${f.key}" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gray-50">
+                        <option value="">Select</option>
+                        ${optionsHtml}
+                    </select>
+                `;
+                binaryGrid.appendChild(wrapper);
+            }
+        }
 
-            // Map Peritonitis
-            const peri = document.getElementById('periSelect').value;
-            rawData["Peritonitis:no"] = peri === 'no' ? 1 : 0;
-            rawData["Peritonitis:local"] = peri === 'local' ? 1 : 0;
-            rawData["Peritonitis:generalized"] = peri === 'generalized' ? 1 : 0;
+        function renderCategoricalFeatures() {
+            categoricalGrid.innerHTML = "";
+            for (const f of categoricalFeatures) {
+                const wrapper = document.createElement("div");
+                const optionsHtml = (f.options || []).map(o => `<option value="${o}">${o}</option>`).join("");
+                wrapper.innerHTML = `
+                    <label class="block text-sm font-medium text-gray-600 mb-1">${f.label}</label>
+                    <select id="f_${f.key}" class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gray-50">
+                        <option value="">Select</option>
+                        ${optionsHtml}
+                    </select>
+                `;
+                categoricalGrid.appendChild(wrapper);
+            }
+        }
 
-            // Map Urine Findings
-            const wbcU = document.getElementById('wbcUrine').value;
-            rawData["WBC_in_Urine:no"] = wbcU === 'no' ? 1 : 0;
-            rawData["WBC_in_Urine:+"] = wbcU === '+' ? 1 : 0;
-            rawData["WBC_in_Urine:++"] = wbcU === '++' ? 1 : 0;
-            rawData["WBC_in_Urine:+++"] = wbcU === '+++' ? 1 : 0;
+        function buildTabularJson() {
+            const payload = {};
 
-            const ketU = document.getElementById('ketonesUrine').value;
-            rawData["Ketones_in_Urine:no"] = ketU === 'no' ? 1 : 0;
-            rawData["Ketones_in_Urine:+"] = ketU === '+' ? 1 : 0;
-            rawData["Ketones_in_Urine:++"] = ketU === '++' ? 1 : 0;
-            rawData["Ketones_in_Urine:+++"] = ketU === '+++' ? 1 : 0;
+            for (const f of numericFeatures) {
+                const raw = document.getElementById(`f_${f.key}`).value;
+                if (raw !== "") {
+                    payload[f.key] = Number(raw);
+                }
+            }
 
-            // Calculate BMI for model
-            rawData["BMI"] = rawData.Weight / ((rawData.Height / 100) ** 2);
+            for (const f of binaryFeatures) {
+                const raw = document.getElementById(`f_${f.key}`).value;
+                if (raw !== "") {
+                    if (f.encoding === "yes_no") {
+                        payload[f.key] = Number(raw);
+                    } else if (f.encoding === "map" && f.map && Object.prototype.hasOwnProperty.call(f.map, raw)) {
+                        payload[f.key] = Number(f.map[raw]);
+                    }
+                }
+            }
+
+            for (const f of categoricalFeatures) {
+                const raw = document.getElementById(`f_${f.key}`).value;
+                if (raw !== "") {
+                    // Match engineered one-hot format used in training: Feature:category
+                    payload[`${f.key}:${raw}`] = 1;
+                }
+            }
+
+            return payload;
+        }
+
+        async function bootstrapForm() {
+            try {
+                await loadSchema();
+                renderNumericFeatures();
+                renderBinaryFeatures();
+                renderCategoricalFeatures();
+            } catch (err) {
+                console.error("Schema load failed:", err);
+                alert("Could not load feature schema from backend.");
+            }
+        }
+
+        bootstrapForm();
+
+        document.getElementById("analyzeBtn").addEventListener("click", async () => {
+            const fileInput = document.getElementById("imageFile");
+            const statusMsg = document.getElementById("statusMsg");
+            const resultsArea = document.getElementById("resultsArea");
+            const placeholderArea = document.getElementById("placeholderArea");
+
+            const tabularPayload = buildTabularJson();
+
+            if (Object.keys(tabularPayload).length === 0 || fileInput.files.length === 0) {
+                alert("Please enter patient features and upload an ultrasound image.");
+                return;
+            }
+
+            statusMsg.classList.remove("hidden");
+            statusMsg.textContent = "Analyzing data through AI Fusion Network...";
 
             const formData = new FormData();
-            formData.append("tabular_data", JSON.stringify(rawData));
+            formData.append("tabular_data", JSON.stringify(tabularPayload));
             formData.append("image", fileInput.files[0]);
 
             try {
-                const res = await fetch('/predict', { method: 'POST', body: formData });
-                const data = await res.json();
-                if (res.ok) {
-                    const r = data.patient_report;
-                    document.getElementById('primaryProb').textContent = r.Appendicitis_Probability + "%";
-                    const b = document.getElementById('riskBadge');
-                    b.textContent = r.Risk_Level + " RISK";
-                    b.className = `px-3 py-1 text-xs font-bold rounded-full ${r.Risk_Level === 'HIGH' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`;
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    body: formData
+                });
 
-                    const sec = document.getElementById('secondaryFindings');
-                    sec.innerHTML = "";
-                    for (const [k, v] of Object.entries(r.Secondary_Findings)) {
-                        sec.innerHTML += `<div><div class="flex justify-between text-[10px] uppercase text-gray-400 font-bold mb-1"><span>${k.replace(/_/g,' ')}</span><span>${v}%</span></div>
-                            <div class="w-full bg-gray-100 rounded-full h-1"><div class="bg-blue-600 h-1 rounded-full transition-all duration-1000" style="width: ${v}%"></div></div></div>`;
+                const data = await response.json();
+
+                if (response.ok) {
+                    const report = data.patient_report;
+
+                    document.getElementById("primaryProb").textContent = report.Appendicitis_Probability + "%";
+
+                    const badge = document.getElementById("riskBadge");
+                    badge.textContent = report.Risk_Level + " RISK";
+                    badge.className = report.Risk_Level === "HIGH"
+                        ? "inline-block px-3 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800"
+                        : "inline-block px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800";
+
+                    const secondaryDiv = document.getElementById("secondaryFindings");
+                    secondaryDiv.innerHTML = "";
+
+                    for (const [finding, prob] of Object.entries(report.Secondary_Findings)) {
+                        const cleanName = finding.replace(/_/g, " ");
+                        const barHtml = `
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="font-medium text-gray-700">${cleanName}</span>
+                                    <span class="text-gray-500">${prob}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full transition-all duration-1000" style="width: ${prob}%"></div>
+                                </div>
+                            </div>
+                        `;
+                        secondaryDiv.innerHTML += barHtml;
                     }
-                    document.getElementById('placeholderArea').classList.add('hidden');
-                    document.getElementById('resultsArea').classList.remove('hidden');
+
+                    placeholderArea.classList.add("hidden");
+                    resultsArea.classList.remove("hidden");
+                    resultsArea.classList.add("flex");
+                    statusMsg.textContent = "Analysis Complete!";
+                    setTimeout(() => statusMsg.classList.add("hidden"), 3000);
+                } else {
+                    alert("API Error: " + (data.detail || data.message || "Unknown error"));
+                    statusMsg.classList.add("hidden");
                 }
-            } catch (err) { alert("Error connecting to server"); }
-            document.getElementById('statusMsg').classList.add('hidden');
+            } catch (error) {
+                console.error("Fetch error:", error);
+                alert("Could not connect to the server.");
+                statusMsg.classList.add("hidden");
+            }
         });
     </script>
 </body>
