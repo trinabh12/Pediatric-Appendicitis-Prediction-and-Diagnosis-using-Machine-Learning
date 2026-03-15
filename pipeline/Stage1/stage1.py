@@ -4,7 +4,7 @@ from download_data import DataDownloader
 
 
 ROOT_DIR = "../"
-os.mkdirs(os.path.join(ROOT_DIR, "data"), exist_ok =True)
+os.mkdir(os.path.join(ROOT_DIR, "data"))
 
 DATASET_DIR = "Regensburg Pediatric Appendicitis Dataset"
 FILE_NAME = "app_data.xlsx"

@@ -1,0 +1,17 @@
+# --- ML Pipeline Orchestration ---
+prefect==3.6.22
+
+# --- Web & API Server ---
+fastapi==0.135.1
+uvicorn==0.41.0
+python-multipart    # Required for FastAPI file uploads
+
+# --- Deep Learning & Machine Learning ---
+tensorflow==2.20.0
+scikit-learn==1.8.0
+safetensors==0.7.0
+
+# --- Image Processing & Data Handling ---
+opencv-python==4.13.0.92
+numpy>=1.26.0       # Added: Required for TF/OpenCV arrays
+pandas>=2.2.0       # Added: Required for Tabular processing
