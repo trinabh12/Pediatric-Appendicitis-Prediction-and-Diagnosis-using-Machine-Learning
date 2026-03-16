@@ -1,4 +1,4 @@
-<h3>Pipeline Overview</h3>
+<h3>Project Overview</h3>
 <p>
 This project implements a full-stack data engineering and machine learning pipeline for Pediatric Appendicitis Prediction using multimodal data, including clinical records, laboratory results, and ultrasound imaging.</p>
 <p>
