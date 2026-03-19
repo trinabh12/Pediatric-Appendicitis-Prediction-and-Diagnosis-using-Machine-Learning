@@ -100,3 +100,27 @@ Train AUC: 93.88%<br>
 Val AUC: 81.79%<br>
 Test AUC: 80.59%<br>
 *(final result)*
+
+
+<h3>System Walkthrough</h3>
+<p>Industrial Relevance Note: The following interface demonstrates a decoupled architecture where the Frontend (Tailwind CSS) communicates with a high-concurrency Backend (FastAPI) to provide real-time clinical support.</p>
+
+<h4>A. Clinical Data Entry (Demographics & Labs)</h4>
+<p>The dashboard allows for the rapid entry of patient vitals and laboratory markers. It automatically handles one-hot encoding and BMI calculations before transmission.</p>
+
+[PLACEHOLDER: Insert screenshot of the "1. Demographics & Vitals" and "2. Laboratory Signals" sections of your UI here]
+
+<h4>B. Multimodal Inference Engine</h4>
+<p>Physicians upload the ultrasound scan (BMP/JPG). The backend triggers the Stage 6 Fusion Model to synthesize tabular and spatial features.</p>
+
+[PLACEHOLDER: Insert screenshot showing the Ultrasound upload area and the "Analyze" button]
+
+<h4>C. Explainable AI (XAI) Diagnostic Report</h4>
+<p>The system provides a probability-based risk badge and breaks down "Secondary Findings." This transparency ensures clinical trust by showing the doctor exactly which sonographic markers influenced the AI's decision.</p>
+
+[PLACEHOLDER: Insert screenshot of the Results Area, showing the Risk Level badge and the Secondary Findings heatbars]
+
+D. Production-Ready Backend (FastAPI/Docker)
+The microservice architecture ensures the system can run offline, protecting sensitive patient data within the hospital’s local network.
+
+[PLACEHOLDER: Insert screenshot of your terminal showing the Docker build process or the FastAPI /docs (Swagger UI) page]
