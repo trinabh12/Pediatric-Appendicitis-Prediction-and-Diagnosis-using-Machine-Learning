@@ -114,13 +114,3 @@ Test AUC: 80.59%<br>
 <p>Physicians upload the ultrasound scan (BMP/JPG). The backend triggers the Stage 6 Fusion Model to synthesize tabular and spatial features.</p>
 
 [PLACEHOLDER: Insert screenshot showing the Ultrasound upload area and the "Analyze" button]
-
-<h4>C. Explainable AI (XAI) Diagnostic Report</h4>
-<p>The system provides a probability-based risk badge and breaks down "Secondary Findings." This transparency ensures clinical trust by showing the doctor exactly which sonographic markers influenced the AI's decision.</p>
-
-[PLACEHOLDER: Insert screenshot of the Results Area, showing the Risk Level badge and the Secondary Findings heatbars]
-
-D. Production-Ready Backend (FastAPI/Docker)
-The microservice architecture ensures the system can run offline, protecting sensitive patient data within the hospital’s local network.
-
-[PLACEHOLDER: Insert screenshot of your terminal showing the Docker build process or the FastAPI /docs (Swagger UI) page]
