@@ -110,6 +110,12 @@ Test AUC: 80.59%<br>
 
 <img width="1177" height="707" alt="image" src="https://github.com/user-attachments/assets/7d229813-7501-4236-a21e-1ec102cbc967" />
 
+<h4>B. Multimodal Inference Engine</h4>
+<p>Physicians upload the ultrasound scan (BMP/JPG). The backend triggers the Stage 6 Fusion Model to synthesize tabular and spatial features.</p>
+
+<img width="1202" height="128" alt="image" src="https://github.com/user-attachments/assets/94de52a4-473a-49ac-b8eb-b85bd44fe3e0" />
+
+
 <h3>🛠️ Setup & Deployment Guide</h3>
 <p>This project is fully containerized to ensure a consistent, "Zero-Trust" environment suitable for secure hospital intranets. Follow these steps to deploy the SaaS for Doctors locally.</p>
 
@@ -154,9 +160,4 @@ Infrastructure as Code (IaC): By using docker-compose.yml, the entire clinical e
 
 Security & Privacy: The local deployment ensures that sensitive patient vitals and ultrasound scans never leave the hospital's local network, meeting strict HIPAA/GDPR data residency requirements.
 
-
-<h4>B. Multimodal Inference Engine</h4>
-<p>Physicians upload the ultrasound scan (BMP/JPG). The backend triggers the Stage 6 Fusion Model to synthesize tabular and spatial features.</p>
-
-<img width="1202" height="128" alt="image" src="https://github.com/user-attachments/assets/94de52a4-473a-49ac-b8eb-b85bd44fe3e0" />
 
