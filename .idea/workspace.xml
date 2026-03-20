@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4702e80d-c78f-419b-b915-904b5e68b085" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pipeline/Stage1/stage1.py" beforeDir="false" afterPath="$PROJECT_DIR$/pipeline/Stage1/stage1.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +81,10 @@
       <workItem from="1772006787793" duration="5491000" />
       <workItem from="1772013098311" duration="12269000" />
       <workItem from="1773123451094" duration="2018000" />
-      <workItem from="1773544013919" duration="3852000" />
+      <workItem from="1773544013919" duration="7561000" />
+      <workItem from="1773643247528" duration="45000" />
+      <workItem from="1773649830198" duration="854000" />
+      <workItem from="1773743985041" duration="5681000" />
     </task>
     <servers />
   </component>
@@ -96,7 +98,7 @@
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$phase2.coverage" NAME="phase2 Coverage Results" MODIFIED="1771567443950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage5.coverage" NAME="stage5 Coverage Results" MODIFIED="1772185333241" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage5" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage2.coverage" NAME="stage2 Coverage Results" MODIFIED="1772183923950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage2" />
-    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$main.coverage" NAME="main Coverage Results" MODIFIED="1773547575240" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
+    <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$main.coverage" NAME="main Coverage Results" MODIFIED="1773565735255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$stage6.coverage" NAME="stage6 Coverage Results" MODIFIED="1771923790122" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pipeline/Stage6" />
     <SUITE FILE_PATH="coverage/Pediatric_Appendicitis_Prediction_and_Diagnosis_using_Machine_Learning$orchestration.coverage" NAME="orchestration Coverage Results" MODIFIED="1773546476160" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/flow orchestration" />
   </component>

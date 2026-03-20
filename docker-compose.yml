@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  api-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: appendicitis-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api/models:/app/api/models
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - cdss-network
+
+networks:
+  cdss-network:
+    driver: bridge
