@@ -108,9 +108,11 @@ Test AUC: 80.59%<br>
 <h4>A. Clinical Data Entry (Demographics & Labs)</h4>
 <p>The dashboard allows for the rapid entry of patient vitals and laboratory markers. It automatically handles one-hot encoding and BMI calculations before transmission.</p>
 
-[PLACEHOLDER: Insert screenshot of the "1. Demographics & Vitals" and "2. Laboratory Signals" sections of your UI here]
+<img width="1177" height="707" alt="image" src="https://github.com/user-attachments/assets/7d229813-7501-4236-a21e-1ec102cbc967" />
+
 
 <h4>B. Multimodal Inference Engine</h4>
 <p>Physicians upload the ultrasound scan (BMP/JPG). The backend triggers the Stage 6 Fusion Model to synthesize tabular and spatial features.</p>
 
-[PLACEHOLDER: Insert screenshot showing the Ultrasound upload area and the "Analyze" button]
+<img width="1202" height="128" alt="image" src="https://github.com/user-attachments/assets/94de52a4-473a-49ac-b8eb-b85bd44fe3e0" />
+
