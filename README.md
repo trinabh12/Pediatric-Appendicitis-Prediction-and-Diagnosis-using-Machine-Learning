@@ -141,13 +141,14 @@ ui/tailwind.min.css: Required for local styling in air-gapped environments.
 
 api/models/: Ensure your trained .keras and .json artifacts are in this directory.
 
-4. Launching the System
-Run the following command to build the image and start the microservice:
+<h4>4. Launching the System</h4>
+<p>Run the following command to build the image and start the microservice:</p>
 
-Bash
+```bash
 docker-compose up --build
-5. Accessing the Dashboard
-Once the logs show Application startup complete, open your browser and navigate to:
+```
+<h4>5. Accessing the Dashboard</h4>
+<p>Once the logs show Application startup complete, open your browser and navigate to:</p>
 
 Clinical Interface: 
 ```bash 
