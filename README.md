@@ -129,9 +129,11 @@ The Regensburg Pediatric Appendicitis Dataset (or sample files) for testing.
 2. Installation
 Clone the repository and navigate to the project root:
 
-Bash
+```bash
 git clone https://github.com/Trinabh-Mitra/Pediatric-Appendicitis-Prediction.git
 cd Pediatric-Appendicitis-Prediction
+```
+
 3. Asset Verification
 Ensure the following files are in place to allow the offline interface and engine to boot:
 
@@ -147,9 +149,10 @@ docker-compose up --build
 5. Accessing the Dashboard
 Once the logs show Application startup complete, open your browser and navigate to:
 
-Clinical Interface: http://localhost:8000
-
-API Documentation (Swagger): http://localhost:8000/docs
+Clinical Interface: 
+```bash 
+http://localhost:8000
+```
 
 👔 Why this is Industrially Relevant (Pitch Highlights)
 During your Review II, you can specifically point to this setup guide to prove the following points:
