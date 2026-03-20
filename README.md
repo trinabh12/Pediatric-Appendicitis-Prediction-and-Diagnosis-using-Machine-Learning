@@ -110,6 +110,50 @@ Test AUC: 80.59%<br>
 
 <img width="1177" height="707" alt="image" src="https://github.com/user-attachments/assets/7d229813-7501-4236-a21e-1ec102cbc967" />
 
+<h3>🛠️ Setup & Deployment Guide</h3>
+<p>This project is fully containerized to ensure a consistent, "Zero-Trust" environment suitable for secure hospital intranets. Follow these steps to deploy the SaaS for Doctors locally.</p>
+
+<h4>1. Prerequisites</h4>
+<p>Docker & Docker Compose installed on your system.</p>
+
+Terminal/Command Prompt with administrative privileges.
+
+The Regensburg Pediatric Appendicitis Dataset (or sample files) for testing.
+
+2. Installation
+Clone the repository and navigate to the project root:
+
+Bash
+git clone https://github.com/Trinabh-Mitra/Pediatric-Appendicitis-Prediction.git
+cd Pediatric-Appendicitis-Prediction
+3. Asset Verification
+Ensure the following files are in place to allow the offline interface and engine to boot:
+
+ui/tailwind.min.css: Required for local styling in air-gapped environments.
+
+api/models/: Ensure your trained .keras and .json artifacts are in this directory.
+
+4. Launching the System
+Run the following command to build the image and start the microservice:
+
+Bash
+docker-compose up --build
+5. Accessing the Dashboard
+Once the logs show Application startup complete, open your browser and navigate to:
+
+Clinical Interface: http://localhost:8000
+
+API Documentation (Swagger): http://localhost:8000/docs
+
+👔 Why this is Industrially Relevant (Pitch Highlights)
+During your Review II, you can specifically point to this setup guide to prove the following points:
+
+Microservice Architecture: The system uses a decoupled FastAPI backend, allowing it to be integrated into existing hospital Electronic Health Record (EHR) systems via REST API calls.
+
+Infrastructure as Code (IaC): By using docker-compose.yml, the entire clinical environment is version-controlled. Whether it's deployed on a high-end server or a basic clinic laptop, the behavior is identical.
+
+Security & Privacy: The local deployment ensures that sensitive patient vitals and ultrasound scans never leave the hospital's local network, meeting strict HIPAA/GDPR data residency requirements.
+
 
 <h4>B. Multimodal Inference Engine</h4>
 <p>Physicians upload the ultrasound scan (BMP/JPG). The backend triggers the Stage 6 Fusion Model to synthesize tabular and spatial features.</p>
