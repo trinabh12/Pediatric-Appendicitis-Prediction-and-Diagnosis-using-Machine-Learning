@@ -1,4 +1,4 @@
-<h3>Pipeline Overview</h3>
+<h3>Project Overview</h3>
 <p>
 This project implements a full-stack data engineering and machine learning pipeline for Pediatric Appendicitis Prediction using multimodal data, including clinical records, laboratory results, and ultrasound imaging.</p>
 <p>
@@ -100,3 +100,17 @@ Train AUC: 93.88%<br>
 Val AUC: 81.79%<br>
 Test AUC: 80.59%<br>
 *(final result)*
+
+
+<h3>System Walkthrough</h3>
+<p>Industrial Relevance Note: The following interface demonstrates a decoupled architecture where the Frontend (Tailwind CSS) communicates with a high-concurrency Backend (FastAPI) to provide real-time clinical support.</p>
+
+<h4>A. Clinical Data Entry (Demographics & Labs)</h4>
+<p>The dashboard allows for the rapid entry of patient vitals and laboratory markers. It automatically handles one-hot encoding and BMI calculations before transmission.</p>
+
+[PLACEHOLDER: Insert screenshot of the "1. Demographics & Vitals" and "2. Laboratory Signals" sections of your UI here]
+
+<h4>B. Multimodal Inference Engine</h4>
+<p>Physicians upload the ultrasound scan (BMP/JPG). The backend triggers the Stage 6 Fusion Model to synthesize tabular and spatial features.</p>
+
+[PLACEHOLDER: Insert screenshot showing the Ultrasound upload area and the "Analyze" button]
