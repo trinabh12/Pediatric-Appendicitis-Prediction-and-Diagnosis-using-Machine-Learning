@@ -126,16 +126,16 @@ Terminal/Command Prompt with administrative privileges.
 
 The Regensburg Pediatric Appendicitis Dataset (or sample files) for testing.
 
-2. Installation
-Clone the repository and navigate to the project root:
+<h4>2. Installation</h4>
+<p>Clone the repository and navigate to the project root:</p>
 
 ```bash
-git clone https://github.com/Trinabh-Mitra/Pediatric-Appendicitis-Prediction.git
-cd Pediatric-Appendicitis-Prediction
+git clone https://github.com/trinabh12/Pediatric-Appendicitis-Prediction-and-Diagnosis-using-Machine-Learning.git
+cd Pediatric-Appendicitis-Prediction-and-Diagnosis-using-Machine-Learning
 ```
 
-3. Asset Verification
-Ensure the following files are in place to allow the offline interface and engine to boot:
+<h4>3. Asset Verification</h4>
+<p>Ensure the following files are in place to allow the offline interface and engine to boot:</p>
 
 ui/tailwind.min.css: Required for local styling in air-gapped environments.
 
