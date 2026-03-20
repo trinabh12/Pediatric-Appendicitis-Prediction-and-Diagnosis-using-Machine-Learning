@@ -139,7 +139,7 @@ cd Pediatric-Appendicitis-Prediction-and-Diagnosis-using-Machine-Learning
 
 ui/tailwind.min.css: Required for local styling in air-gapped environments.
 
-api/models/: Ensure your trained .keras and .json artifacts are in this directory.
+api/models/: Ensure the trained .keras and .json artifacts are in this directory.
 
 <h4>4. Launching the System</h4>
 <p>Run the following command to build the image and start the microservice:</p>
@@ -155,13 +155,6 @@ Clinical Interface:
 http://localhost:8000
 ```
 
-👔 Why this is Industrially Relevant (Pitch Highlights)
-During your Review II, you can specifically point to this setup guide to prove the following points:
 
-Microservice Architecture: The system uses a decoupled FastAPI backend, allowing it to be integrated into existing hospital Electronic Health Record (EHR) systems via REST API calls.
-
-Infrastructure as Code (IaC): By using docker-compose.yml, the entire clinical environment is version-controlled. Whether it's deployed on a high-end server or a basic clinic laptop, the behavior is identical.
-
-Security & Privacy: The local deployment ensures that sensitive patient vitals and ultrasound scans never leave the hospital's local network, meeting strict HIPAA/GDPR data residency requirements.
 
 
